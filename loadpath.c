@@ -94,6 +94,10 @@ const char ruby_initial_load_paths[] =
 #endif
 #endif
 
+#ifdef RUBYGEMS_DIR
+    RUBYGEMS_DIR "\0"
+#endif
+
     RUBY_LIB "\0"
 #ifdef RUBY_THINARCH
     RUBY_ARCH_LIB_FOR(RUBY_THINARCH) "\0"

@@ -4316,6 +4316,8 @@ AC_SUBST(vendorarchdir)dnl
 AC_SUBST(CONFIGURE, "`echo $0 | sed 's|.*/||'`")dnl
 AC_SUBST(configure_args, "`echo "${ac_configure_args}" | sed 's/\\$/$$/g'`")dnl
 
+target_cpu=`echo $target_cpu | sed s/i.86/i386/`
+
 AS_IF([test "${universal_binary-no}" = yes ], [
     arch="universal-${target_os}"
     AS_IF([test "${rb_cv_architecture_available}" = yes], [

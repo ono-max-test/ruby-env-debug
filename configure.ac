@@ -4252,7 +4252,8 @@ AS_CASE(["$ruby_version_dir_name"],
 ruby_version_dir=/'${ruby_version_dir_name}'
 
 if test -z "${ruby_version_dir_name}"; then
-    AC_MSG_ERROR([No ruby version, No place for bundled libraries])
+    unset ruby_version_dir
+    AC_DEFINE(RUBY_LIB_VERSION_BLANK, 1)
 fi
 
 rubylibdir='${rubylibprefix}'${ruby_version_dir}

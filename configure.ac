@@ -3774,6 +3774,11 @@ AS_IF([test ${multiarch+set}], [
 ])
 
 archlibdir='${libdir}/${arch}'
+AC_ARG_WITH(archlibdir,
+	    AS_HELP_STRING([--with-archlibdir=DIR],
+			   [prefix for libruby [[LIBDIR/ARCH]]]),
+	    [archlibdir="$withval"])
+
 sitearchlibdir='${libdir}/${sitearch}'
 archincludedir='${includedir}/${arch}'
 sitearchincludedir='${includedir}/${sitearch}'

@@ -953,9 +953,9 @@ $(MINIPRELUDE_C): $(COMPILE_PRELUDE)
 		$(srcdir)/template/prelude.c.tmpl
 
 $(PRELUDE_C): $(COMPILE_PRELUDE) \
-	   $(PRELUDE_SCRIPTS)
+	   $(PRELUDE_SCRIPTS) $(PREP)
 	$(ECHO) generating $@
-	$(Q) $(BASERUBY) $(srcdir)/tool/generic_erb.rb -I$(srcdir) -c -o $@ \
+	$(Q) $(MINIRUBY) $(srcdir)/tool/generic_erb.rb -I$(srcdir) -c -o $@ \
 		$(srcdir)/template/prelude.c.tmpl $(PRELUDE_SCRIPTS)
 
 {$(VPATH)}golf_prelude.c: $(COMPILE_PRELUDE) {$(srcdir)}golf_prelude.rb

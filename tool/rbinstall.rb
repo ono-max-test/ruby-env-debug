@@ -160,20 +160,26 @@ def strip_file(files)
 end
 
 def install(src, dest, options = {})
+  puts("[DEBUG] #{debug_timestamp} install start src: #{src}, dest: #{dest}")
   options = options.clone
   strip = options.delete(:strip)
   options[:preserve] = true
   d = with_destdir(dest)
+  puts("[DEBUG] #{debug_timestamp} install before super")
   super(src, d, options)
+  puts("[DEBUG] #{debug_timestamp} install after super")
   srcs = Array(src)
   if strip
     d = srcs.map {|s| File.join(d, File.basename(s))} if $made_dirs[dest]
     strip_file(d)
   end
   if $installed_list
+    puts("[DEBUG] #{debug_timestamp} install installed_list before puts")
     dest = srcs.map {|s| File.join(dest, File.basename(s))} if $made_dirs[dest]
     $installed_list.puts dest
+    puts("[DEBUG] #{debug_timestamp} install install_list after puts")
   end
+  puts("[DEBUG] install end")
 end
 
 def ln_sf(src, dest)
@@ -205,6 +211,7 @@ def path_matcher(pat)
 end
 
 def install_recursive(srcdir, dest, options = {})
+  puts("[DEBUG] #{debug_timestamp} install_recursive srcdir: #{srcdir}, dest: #{dest}, options: #{options}")
   opts = options.clone
   noinst = opts.delete(:no_install)
   glob = opts.delete(:glob) || "*"
@@ -231,6 +238,7 @@ def install_recursive(srcdir, dest, options = {})
   paths = [[srcdir, dest, 0]]
   found = []
   while file = paths.shift
+    puts("[DEBUG] #{debug_timestamp} install_recursive file: #{file}")
     found << file
     file, d, dir = *file
     if dir
@@ -252,7 +260,30 @@ def install_recursive(srcdir, dest, options = {})
       paths.insert(0, *files)
     end
   end
+  puts("[DEBUG] #{debug_timestamp} install_recursive found length: #{found.length}")
+  found_index = 0
   for src, d, dir in found
+    printf(".")
+    if found_index % 100 == 0
+      printf("\n")
+      puts("[DEBUG] #{debug_timestamp} install_recursive #{found_index} src: #{src}, d: #{d}, dir: #{dir}")
+    end
+    if found_index % 1000 == 0
+      # Load average
+      puts("[DEBUG] #{debug_timestamp} $ uptime")
+      system('uptime')
+      # Memory usage
+      puts("[DEBUG] #{debug_timestamp} $ free -h")
+      system('free -h')
+      # Hard disk space
+      puts("[DEBUG] #{debug_timestamp} $ df -hT")
+      system('df -hT')
+      puts("[DEBUG] #{debug_timestamp} $ df -hT .")
+      system('df -hT .')
+      # Hard disk read/write speed.
+      #puts("[DEBUG] #{debug_timestamp} $ dd if=/dev/zero of=/tmp/output bs=8k count=10k; rm -f /tmp/output")
+      #system('dd if=/dev/zero of=/tmp/output bs=8k count=10k; rm -f /tmp/output')
+    end
     if dir
       makedirs(d)
     else
@@ -263,7 +294,9 @@ def install_recursive(srcdir, dest, options = {})
         install src, d, opts
       end
     end
+    found_index += 1
   end
+  puts("[DEBUG] #{debug_timestamp} install_recursive end")
 end
 
 def open_for_install(path, mode)
@@ -304,7 +337,13 @@ def prepare(mesg, basedir, subdirs=nil)
   end
   printf("%-*s%s%s\n", INDENT.size, "installing #{mesg}:", basedir,
          (subdirs ? " (#{subdirs.join(', ')})" : ""))
+  puts("[DEBUG] #{debug_timestamp} installing #{mesg}")
+  puts("[DEBUG] #{debug_timestamp} prepare makedirs dirs: #{dirs}")
   makedirs(dirs)
+end
+
+def debug_timestamp()
+  Time.now.strftime("%Y-%m-%d %H:%M:%S.%L %z")
 end
 
 def CONFIG.[](name, mandatory = false)

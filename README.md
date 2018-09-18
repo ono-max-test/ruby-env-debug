@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/ruby/ruby.svg)](https://travis-ci.org/ruby/ruby)
 [![Build status](https://ci.appveyor.com/api/projects/status/0sy8rrxut4o0k960/branch/trunk?svg=true)](https://ci.appveyor.com/project/ruby/ruby/branch/trunk)
+[![Coverity Scan](https://img.shields.io/coverity/scan/16762.svg)](https://scan.coverity.com/projects/junaruga-ruby)
 
 # What's Ruby
 

@@ -21,6 +21,12 @@ dist: trusty
 
 sudo: false
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "BBNCt+4KMRDAGb0jPM3JJFwJ6kDJfQa31f8mLALZX4MHBOsQnGkbrdx2GfcZ2WSq9Jo7S4pT+YrW7mc3M5LowHS7yFVNEoYhn52MbZ2CTKUdtxoy0FuMfnPkk3UploXuruVHDp4Ny7FlMRc5dxFwOkekWegBKEvopIU9tT7Dsi85vABygUUKMSLCd9L0nj8+tKNMKZaD+sgeNQ3Ujr5r/N1Z/GarCC6pFkL1ShhojqDsNBOcPX34JddS/zQXrEwNEEcaxv3QBVDZdPSs2ZdsCr2iiWWVcqOnBAQYEfAhqC206Gxs4VE4rG1/0S9uRswI2uyLJKDbzSY9vtikJGTHwOyVhNEPuwkCZvKjWcgddY1NyNa2rly5TKKTs92h6k1zBHL42LyFqC2EwvCZ+cM4F2+lOUwEgRNd3tqoNxFsbTGsfdH9scm13lsjI0/hVBw9UALEIO22Lzo4wBN4GFtZ9Xm/kO86ppyEqTwFLQ2Urj/SdUHyZBLoM4eqSOWsBx+aTlPkex6PELRR1VZ9Q8ZcErUwhaRAlLh5JNycqWctJFKIyPJU63GQmg9Ax1bMT2UrjuvTzvdRoDu2eWMESw4pe5JTgWDEqrQcFNPXtr3oRcMCzPJLcyguhJFI6tkgM4u+i+zERfMik3IsRagiqF9Sf5IcYaL9XQNHcyUl7iyQNV8="
+
 matrix:
   include:
     - os: linux
@@ -33,6 +39,16 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - gcc-8
+        coverity_scan:
+          project:
+            name: "junaruga/ruby"
+            description: "Build submitted via Travis CI"
+          notification_email: happy@oh4u.net
+          build_command_prepend: autoconf && ./configure
+          build_command: make -j2
+          branch_pattern: travis-coverity-scan
+      install:
+        - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
     - os: linux
       language: ruby
       rvm: 2.3

@@ -48,6 +48,9 @@ addons:
       - libffi
       - openssl@1.1
       - zlib
+cache:
+  - directories:
+    - $HOME/local
 
 .org.ruby-lang.ci.matrix-definitions:
 
@@ -281,6 +284,43 @@ matrix:
     - <<: *CALL_THREADED_CODE
     - <<: *NO_THREADED_CODE
     - <<: *rubyspec
+    - name: x86_64-linux-fips
+      <<: *linux
+      env:
+        - "OPENSSL_FIPS_VERSION=2.0.16"
+        - "OPENSSL_VERSION=1.1.1"
+        - "OPENSSL_DIR=$HOME/local/openssl-$OPENSSL_VERSION"
+        - "OPENSSL_FIPS_DIR=$HOME/local/openssl-fips-$OPENSSL_FIPS_VERSION"
+        - "PATH=$OPENSSL_DIR/bin:/tmp/ruby-prefix/bin:$PATH"
+        - "CFLAGS=-I$OPENSSL_DIR/include"
+        - "LDFLAGS=-L$OPENSSL_DIR/lib"
+        - "LD_LIBRARY_PATH=$OPENSSL_DIR/lib"
+        - "PKG_CONFIG_PATH=$OPENSSL_DIR/lib/pkgconfig"
+      before_install:
+        - "curl -sL -O https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VERSION.tar.gz"
+        - "tar xzf openssl-fips-$OPENSSL_FIPS_VERSION.tar.gz"
+        - "pushd openssl-fips-$OPENSSL_FIPS_VERSION"
+        - "./config --prefix=$OPENSSL_FIPS_DIR"
+        - "make -s && make install"
+        - "popd"
+        - "curl -sL -O https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz"
+        - "tar xzf openssl-$OPENSSL_VERSION.tar.gz"
+        - "pushd openssl-$OPENSSL_VERSION"
+        - |
+          ./Configure \
+            --prefix=$OPENSSL_DIR \
+            fips \
+            --with-fipsdir=$OPENSSL_FIPS_DIR \
+            linux-x86_64
+        - "make -s && make install_sw"
+        - "popd"
+        - "openssl version"
+      script:
+        - which ruby
+        - ruby --version
+        - ruby -e "require 'openssl'; puts OpenSSL::OPENSSL_VERSION"
+        - ruby -e "require 'openssl'; puts OpenSSL::OPENSSL_FIPS"
+        - ruby -e "require 'openssl'; puts OpenSSL.fips_mode"
   allow_failures:
     - name: uinversal.x86_64h-darwin17
     - name: -fsanitize=address

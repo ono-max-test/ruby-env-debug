@@ -21,11 +21,16 @@ dist: trusty
 
 sudo: false
 
-matrix:
+stages:
+  - compile
+  - test
+jobs:
   include:
-    - os: linux
+    - stage: compile
+      os: linux
       compiler: gcc
-    - os: linux
+    - stage: compile
+      os: linux
       compiler: gcc-8
       addons:
         apt:
@@ -38,7 +43,62 @@ matrix:
       install:
         - source ./tool/install_openssl.sh "${OPENSSL_VERSION}"
         - openssl version
-    - os: linux
+    - stage: test
+      os: linux
+      compiler: gcc
+      script:
+        - "cd ${SHARED_DIR}"
+        - "make -s test TESTOPTS=--color=never"
+    - stage: test
+      os: linux
+      compiler: gcc
+      script:
+        - "cd ${SHARED_DIR}"
+        - "make -s $JOBS test-all -o exts TESTOPTS='-q --color=never --job-status=normal' RUBY_FORCE_TEST_JIT=1"
+    - stage: test
+      os: linux
+      compiler: gcc
+      script:
+        - "cd ${SHARED_DIR}"
+        - "make -s $JOBS test-spec MSPECOPT=-j"
+    - stage: test
+      os: linux
+      compiler: gcc-8
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+      script:
+        - "cd ${SHARED_DIR}"
+        - "make -s test TESTOPTS=--color=never"
+    - stage: test
+      os: linux
+      compiler: gcc-8
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+      script:
+        - "cd ${SHARED_DIR}"
+        - "make -s $JOBS test-all -o exts TESTOPTS='-q --color=never --job-status=normal' RUBY_FORCE_TEST_JIT=1"
+    - stage: test
+      os: linux
+      compiler: gcc-8
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+      script:
+        - "cd ${SHARED_DIR}"
+        - "make -s $JOBS test-spec MSPECOPT=-j"
+    - stage: compile
+      os: linux
       language: ruby
       rvm: 2.3
       name: Running ruby/spec on 2.3 to ensure version guards are correctly added
@@ -50,8 +110,17 @@ matrix:
 before_install:
   - "CONFIG_FLAG="
   - "JOBS=-j`nproc`"
+  - "SHARED_DIR=${HOME}/shared/${CC}"
+  # Set up awscli packages
+  # https://docs.travis-ci.com/user/build-stages/share-files-s3/
+  # https://github.com/travis-ci/build-stages-demo/blob/shared-storage-with-s3/.travis.yml
+  - pip install --user awscli
+  - "mkdir -p ${SHARED_DIR}"
+  # - aws s3 sync "s3://travis-build-stages-shared-storage-test/${CC}" "${SHARED_DIR}"
+  - "aws s3 sync s3://travis-build-stages-shared-storage-test/shared ~/shared"
 
-before_script:
+
+script:
   - "echo JOBS=$JOBS"
   - "uname -a"
   - "uname -r"
@@ -68,21 +137,25 @@ before_script:
   - "${requests:+git -C spec/ruby -c user.email=none -c user.name=none pull --no-edit origin $requests}"
   - "${requests:+git -C spec/ruby log --oneline origin/master..@}"
   - "rm config.status Makefile rbconfig.rb .rbconfig.time"
-  - "mkdir build config_1st config_2nd"
+  - "mkdir config_1st config_2nd"
   - "chmod -R a-w ."
-  - "chmod u+w build config_1st config_2nd"
-  - "cd build"
-  - "../configure -C --disable-install-doc --prefix=/tmp/ruby-prefix --with-gcc=$CC $CONFIG_FLAG"
-  - "cp -pr config.cache config.status .ext/include ../config_1st"
+  - "chmod -R u+w config_1st config_2nd"
+  - "BUILD_DIR=$(pwd)"
+  - "cd ${SHARED_DIR}/${CC}"
+  - "${BUILD_DIR}/configure -C --disable-install-doc --prefix=/tmp/ruby-prefix --with-gcc=$CC $CONFIG_FLAG"
+  - "cp -pr config.cache config.status .ext/include ${BUILD_DIR}/config_1st"
   - "make reconfig"
-  - "cp -pr config.cache config.status .ext/include ../config_2nd"
-  - "(cd .. && exec diff -ru config_1st config_2nd)"
+  - "cp -pr config.cache config.status .ext/include ${BUILD_DIR}/config_2nd"
+  - "(cd ${BUILD_DIR} && exec diff -ru config_1st config_2nd)"
   - "make -s $JOBS && make install"
 
-script:
-  - "make -s test TESTOPTS=--color=never"
-  - "make -s $JOBS test-all -o exts TESTOPTS='-q --color=never --job-status=normal' RUBY_FORCE_TEST_JIT=1"
-  - "make -s $JOBS test-spec MSPECOPT=-j"
+# script:
+#   - "make -s test TESTOPTS=--color=never"
+#   - "make -s $JOBS test-all -o exts TESTOPTS='-q --color=never --job-status=normal' RUBY_FORCE_TEST_JIT=1"
+#   - "make -s $JOBS test-spec MSPECOPT=-j"
+
+after_success:
+  - aws s3 sync "${SHARED_DIR}" "s3://travis-build-stages-shared-storage-test/${CC}"
 
 # Branch matrix.  Not all branches are Travis-ready so we limit branches here.
 branches:

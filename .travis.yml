@@ -27,7 +27,7 @@ matrix:
       compiler: gcc
     - os: linux
       compiler: gcc-8
-      addons:
+      addons: &addons_gcc_8
         apt:
           sources:
             - ubuntu-toolchain-r-test
@@ -35,9 +35,21 @@ matrix:
             - gcc-8
       env:
         - OPENSSL_VERSION=1.1.1
-      install:
+      install: &install_openssl
         - source ./tool/install_openssl.sh "${OPENSSL_VERSION}"
         - openssl version
+      script:
+        - "make install"
+        - "make -s test TESTOPTS=--color=never"
+        - "make -s $JOBS test-spec MSPECOPT=-j"
+    - os: linux
+      compiler: gcc-8
+      addons: *addons_gcc_8
+      env:
+        - OPENSSL_VERSION=1.1.1
+      install: *install_openssl
+      script:
+        - "make -s $JOBS test-all -o exts TESTOPTS='-q --color=never --job-status=normal' RUBY_FORCE_TEST_JIT=1"
     - os: linux
       language: ruby
       rvm: 2.3
@@ -77,9 +89,10 @@ before_script:
   - "make reconfig"
   - "cp -pr config.cache config.status .ext/include ../config_2nd"
   - "(cd .. && exec diff -ru config_1st config_2nd)"
-  - "make -s $JOBS && make install"
+  - "make -s $JOBS"
 
 script:
+  - "make install"
   - "make -s test TESTOPTS=--color=never"
   - "make -s $JOBS test-all -o exts TESTOPTS='-q --color=never --job-status=normal' RUBY_FORCE_TEST_JIT=1"
   - "make -s $JOBS test-spec MSPECOPT=-j"

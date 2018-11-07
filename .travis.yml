@@ -297,6 +297,7 @@ matrix:
         - "LD_LIBRARY_PATH=$OPENSSL_DIR/lib"
         - "PKG_CONFIG_PATH=$OPENSSL_DIR/lib/pkgconfig"
       before_install:
+        - "sysctl crypto.fips_enabled"
         - "curl -sL -O https://www.openssl.org/source/openssl-fips-$OPENSSL_FIPS_VERSION.tar.gz"
         - "tar xzf openssl-fips-$OPENSSL_FIPS_VERSION.tar.gz"
         - "pushd openssl-fips-$OPENSSL_FIPS_VERSION"

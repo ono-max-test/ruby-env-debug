@@ -372,25 +372,25 @@ matrix:
   include:
     # Build every commit:
     - <<: *x86_64-linux
-    - <<: *i686-linux
-    - <<: *pedanticism
-    - <<: *assertions
-    - <<: *baseruby
-    - <<: *rubyspec
-    - <<: *dependency
+    # - <<: *i686-linux
+    # - <<: *pedanticism
+    # - <<: *assertions
+    # - <<: *baseruby
+    # - <<: *rubyspec
+    # - <<: *dependency
     # Build every commit (Allowed Failures):
-    - <<: *ASAN
-    - <<: *MSAN
-    - <<: *UBSAN
+    # - <<: *ASAN
+    # - <<: *MSAN
+    # - <<: *UBSAN
     # Cron only:
-    - <<: *jemalloc
-    - <<: *VM_CHECK_MODE
-    - <<: *SUPPORT_JOKE
-    - <<: *WITH_COROUTINE_UCONTEXT
-    - <<: *WITH_COROUTINE_COPY
-    - <<: *TOKEN_THREADED_CODE
-    - <<: *CALL_THREADED_CODE
-    - <<: *NO_THREADED_CODE
+    # - <<: *jemalloc
+    # - <<: *VM_CHECK_MODE
+    # - <<: *SUPPORT_JOKE
+    # - <<: *WITH_COROUTINE_UCONTEXT
+    # - <<: *WITH_COROUTINE_COPY
+    # - <<: *TOKEN_THREADED_CODE
+    # - <<: *CALL_THREADED_CODE
+    # - <<: *NO_THREADED_CODE
     - name: x86_64-linux-openssl-fips
       <<: *gcc-8
       env:

@@ -397,7 +397,7 @@ matrix:
         - "OPENSSL_FIPS_VERSION=2.0.16"
         # OpenSSL 1.0.2 is the latest version supporting openssl-fips.
         # https://github.com/openssl/openssl/issues/7582
-        - "OPENSSL_VERSION=1.0.2p"
+        - "OPENSSL_VERSION=1.0.2s"
         - "OPENSSL_DIR=$HOME/local/openssl-$OPENSSL_VERSION"
         - "OPENSSL_FIPS_DIR=$HOME/local/openssl-fips-$OPENSSL_FIPS_VERSION"
         - "PATH=$OPENSSL_DIR/bin:$PATH"

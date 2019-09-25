@@ -60,6 +60,23 @@ env:
     script:
       - $SETARCH make -s test TESTOPTS="${TESTOPTS=$JOBS -q --tty=no}"
 
+  - &test-in-container
+    language: bash
+    before_install:
+    install:
+      # Install /proc/sys/fs/binfmt_misc/qemu-* files to run arch containers.
+      - |
+        if [ "$(uname -m)" = x86_64 ]; then
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        fi
+      - ls /proc/sys/fs/binfmt_misc/
+      - |
+        tool/travis_retry.sh docker build --rm -t test/ruby/${BASE_IMAGE} \
+          --build-arg BASE_IMAGE=${BASE_IMAGE} -f tool/ci/Dockerfile .
+    before_script:
+    script:
+      - docker run --rm -t test/ruby/${BASE_IMAGE} tool/ci/test.sh
+
   - &gcc-8
     compiler: gcc-8
     # # Not using addon to control retries
@@ -277,6 +294,24 @@ env:
           zlib1g-dev:i386 \
           zlib1g:i386
 
+  - &x86_64-linux-container
+    name: arm64-linux
+    env:
+      - BASE_IMAGE=ubuntu:bionic
+    <<: *test-in-container
+
+  - &arm64-linux
+    name: arm64-linux
+    env:
+      - BASE_IMAGE=arm64v8/ubuntu
+    <<: *test-in-container
+
+  - &arm32-linux
+    name: arm32-linux
+    env:
+      - BASE_IMAGE=arm32v7/ubuntu
+    <<: *test-in-container
+
   - &pedanticism
     name: -std=c99 -pedantic
     compiler: clang
@@ -365,17 +400,19 @@ env:
 matrix:
   include:
     # Build every commit:
-    - <<: *x86_64-linux
+    # - <<: *x86_64-linux
     - <<: *i686-linux
-    - <<: *pedanticism
-    - <<: *assertions
-    - <<: *baseruby
-    - <<: *rubyspec
-    - <<: *dependency
+    - <<: *x86_64-linux-container
+    # - <<: *arm64-linux
+    # - <<: *pedanticism
+    # - <<: *assertions
+    # - <<: *baseruby
+    # - <<: *rubyspec
+    # - <<: *dependency
     # Build every commit (Allowed Failures):
-    - <<: *ASAN
-    - <<: *MSAN
-    - <<: *UBSAN
+    # - <<: *ASAN
+    # - <<: *MSAN
+    # - <<: *UBSAN
     # Cron only:
     - <<: *jemalloc
     - <<: *VM_CHECK_MODE

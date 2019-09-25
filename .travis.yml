@@ -75,7 +75,8 @@ env:
           --build-arg BASE_IMAGE=${BASE_IMAGE} -f tool/ci/Dockerfile .
     before_script:
     script:
-      - docker run --rm -t test/ruby/${BASE_IMAGE} tool/ci/test.sh
+      # Use "--net=host" to avoid "Cannot assign requested address" error.
+      - docker run --rm -t --network=host test/ruby/${BASE_IMAGE} tool/ci/test.sh
 
   - &gcc-8
     compiler: gcc-8
@@ -295,7 +296,7 @@ env:
           zlib1g:i386
 
   - &x86_64-linux-container
-    name: arm64-linux
+    name: x86_64-linux-container
     env:
       - BASE_IMAGE=ubuntu:bionic
     <<: *test-in-container

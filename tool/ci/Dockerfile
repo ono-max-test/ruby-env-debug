@@ -1,5 +1,3 @@
-# Docker >= 17.05.0-ce allows using build-time args (ARG) in FROM (#31352).
-# https://github.com/moby/moby/releases/tag/v17.05.0-ce
 ARG BASE_IMAGE=ubuntu:bionic
 FROM ${BASE_IMAGE}
 
@@ -15,8 +13,6 @@ RUN apt-get -y update \
   build-essential \
   ca-certificates \
   curl \
-  # For convenience
-  git \
   gzip \
   libffi-dev \
   libssl-dev \
@@ -25,12 +21,11 @@ RUN apt-get -y update \
   pkg-config \
   openssl \
   ruby \
-  software-properties-common \
   tzdata \
   zlib1g-dev \
   && apt-get -y upgrade \
   && apt-get -y autoremove \
   && apt-get -y clean
 # Set a time zone to pass the test.
-RUN ln -snf /usr/share/zoneinfo/Japan /etc/localtime
-RUN dpkg-reconfigure --frontend noninteractive tzdata
+# RUN ln -snf /usr/share/zoneinfo/Japan /etc/localtime
+# RUN dpkg-reconfigure --frontend noninteractive tzdata

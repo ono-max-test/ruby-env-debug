@@ -21,6 +21,8 @@ RUN (apt-get -y -qq update \
   pkg-config \
   openssl \
   ruby \
+  # Used in tool/ci/test.sh
+  time \
   tzdata \
   zlib1g-dev \
   && apt-get -y -qq upgrade \

@@ -6,6 +6,8 @@ matrix:
     - nodePool: shippable_shared_aarch32
       env: BASE_IMAGE=arm32v7/ubuntu
 build:
+  pre_ci_boot:
+    options: "--network=host"
   ci:
     # Show environment.
     - uname -a
@@ -13,4 +15,5 @@ build:
     - |
       docker build --rm -t "test/ruby/${BASE_IMAGE}" \
         --build-arg BASE_IMAGE="${BASE_IMAGE}" -f tool/ci/Dockerfile .
-    - docker run --rm -t --network=host "test/ruby/${BASE_IMAGE}" tool/ci/test.sh
+    # - docker run --rm -t --network=host "test/ruby/${BASE_IMAGE}" tool/ci/test.sh
+    - docker run --rm -t "test/ruby/${BASE_IMAGE}" tool/ci/test.sh

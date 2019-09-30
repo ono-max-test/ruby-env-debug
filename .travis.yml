@@ -410,9 +410,9 @@ matrix:
     # - <<: *x86_64-linux
     # - <<: *i686-linux
     - <<: *x86_64-linux-container
-    - <<: *arm64-linux
-    - <<: *arm32-linux
-    - <<: *s390x-linux
+    # - <<: *arm64-linux
+    # - <<: *arm32-linux
+    # - <<: *s390x-linux
     # - <<: *pedanticism
     # - <<: *assertions
     # - <<: *baseruby

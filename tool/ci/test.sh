@@ -7,6 +7,7 @@ JOBS="-j$((1+${NPROC}))"
 TESTOPTS="${TESTOPTS=${JOBS} -q --tty=no}"
 TIME="/usr/bin/time -f TIME=%esec"
 
+uname -m
 autoconf
 ${TIME} ./configure --disable-install-doc --prefix=/tmp/ruby-prefix
 ${TIME} make -s ${JOBS}

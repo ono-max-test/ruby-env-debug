@@ -6,12 +6,14 @@ matrix:
     - nodePool: shippable_shared_aarch32
       env: BASE_IMAGE=arm32v7/ubuntu
 build:
-  pre_ci_boot:
-    options: "--network=host"
+  # Docker options in pre_ci_boot section are not allowed on restricted shared node pools.
+  # pre_ci_boot:
+  #   options: "--network=host"
+  # http://docs.shippable.com/ci/build-image/
   ci:
     # Show environment.
     - uname -a
-    - echo "BASE_IMAGE=$BASE_IMAGE"
+    # - echo "BASE_IMAGE=$BASE_IMAGE"
     - |
       docker build --rm -t "test/ruby/${BASE_IMAGE}" \
         --build-arg BASE_IMAGE="${BASE_IMAGE}" -f tool/ci/Dockerfile .

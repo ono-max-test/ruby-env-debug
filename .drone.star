@@ -13,8 +13,10 @@ def pipeline(name, arch):
         "image": "ruby:2.5-stretch",
         "commands": [
           "uname -m",
+          "apt-get -yq update",
           "apt-get -yq install software-properties-common",
           "apt-get -yq install bison sudo",
+          "ruby -e \"hosts = File.read('/etc/hosts').sub(/^::1\s*localhost.*$/, ''); File.write('/etc/hosts', hosts)\"",
         ]
       }
     ],

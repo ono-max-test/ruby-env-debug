@@ -33,11 +33,11 @@ def pipeline(name, arch):
         ]
       }
     ],
-    "trigger": {
-      "branch": [
-        "master"
-      ]
-    }
+    # "trigger": {
+    #   "branch": [
+    #     "master"
+    #   ]
+    # }
   }
 
 def main(ctx):

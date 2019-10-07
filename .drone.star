@@ -12,7 +12,9 @@ def pipeline(name, arch):
         "name": "test",
         "image": "ruby:2.5-stretch",
         "commands": [
-          "uname -m"
+          "uname -m",
+          "apt-get -yq install software-properties-common",
+          "apt-get -yq install bison sudo",
         ]
       }
     ],

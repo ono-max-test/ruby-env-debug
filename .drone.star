@@ -16,7 +16,7 @@ def pipeline(name, arch):
           "apt-get -yq update",
           "apt-get -yq install software-properties-common",
           "apt-get -yq install bison sudo",
-          "ruby -e \"hosts = File.read('/etc/hosts').sub(/^::1\\s*localhost.*$/, ''); File.write('/etc/hosts', hosts)\"",
+          "ruby -e \"hosts = File.read('/etc/hosts').sub(/^::1 *localhost.*$/, ''); File.write('/etc/hosts', hosts)\"",
         ]
       }
     ],

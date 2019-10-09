@@ -124,6 +124,10 @@ env:
     env:
       - TEST_MJIT_SYMBOLS=1 # detect exports missing for MJIT
 
+  - &arm64-linux
+    <<: *x86_64-linux
+    arch: arm64
+
   - &jemalloc
     name: --with-jemalloc
     <<: *gcc-8
@@ -366,6 +370,7 @@ matrix:
   include:
     # Build every commit:
     - <<: *x86_64-linux
+    - <<: *arm64-linux
     - <<: *i686-linux
     - <<: *pedanticism
     - <<: *assertions

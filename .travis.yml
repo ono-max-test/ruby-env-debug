@@ -470,12 +470,12 @@ script:
   - $SETARCH make -s -o showflags leaked-globals
 
 # Branch matrix.  Not all branches are Travis-ready so we limit branches here.
-branches:
-  only:
-    - master
-    - ruby_2_4
-    - ruby_2_5
-    - ruby_2_6
+# branches:
+#   only:
+#     - master
+#     - ruby_2_4
+#     - ruby_2_5
+#     - ruby_2_6
 
 # We want to be notified when something happens.
 notifications:

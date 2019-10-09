@@ -125,8 +125,11 @@ env:
       - TEST_MJIT_SYMBOLS=1 # detect exports missing for MJIT
 
   - &arm64-linux
-    <<: *x86_64-linux
+    name: arm64-linux
     arch: arm64
+    <<: *gcc-8
+    env:
+      - TEST_MJIT_SYMBOLS=1
 
   - &jemalloc
     name: --with-jemalloc

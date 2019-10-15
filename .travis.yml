@@ -285,6 +285,39 @@ env:
           zlib1g-dev:i386 \
           zlib1g:i386
 
+  - &arm32-linux
+    name: arm32-linux
+    compiler: gcc-8
+    env:
+      - GCC_FLAGS=-m32
+      - CXX='g++-8 -m32'
+      - debugflags=-g0
+      - SETARCH='setarch armhf --verbose --3gb'
+    before_install:
+      - tool/travis_retry.sh sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test"
+      - tool/travis_retry.sh sudo bash -c "rm -rf '${TRAVIS_ROOT}/var/lib/apt/lists/'* && exec apt-get update -yq"
+      - |-
+        tool/travis_retry.sh sudo -E apt-get $travis_apt_get_options install \
+          ccache:armhf \
+          gcc-8-multilib \
+          g++-8 \
+          g++-8-multilib \
+          libstdc++-8-dev:armhf \
+          libffi-dev:armhf \
+          libffi6:armhf \
+          libgdbm-dev:armhf \
+          libgdbm3:armhf \
+          libncurses5-dev:armhf \
+          libncurses5:armhf \
+          libncursesw5-dev:armhf \
+          libreadline6-dev:armhf \
+          libreadline6:armhf \
+          libssl-dev:armhf \
+          libssl1.0.0:armhf \
+          linux-libc-dev:armhf \
+          zlib1g-dev:armhf \
+          zlib1g:armhf
+
   - &pedanticism
     name: -std=c99 -pedantic
     compiler: clang
@@ -376,6 +409,7 @@ matrix:
     - <<: *x86_64-linux
     - <<: *arm64-linux
     - <<: *i686-linux
+    - <<: *arm32-linux
     - <<: *pedanticism
     - <<: *assertions
     - <<: *baseruby
@@ -395,6 +429,8 @@ matrix:
     - <<: *CALL_THREADED_CODE
     - <<: *NO_THREADED_CODE
   allow_failures:
+    - name: arm64-linux
+    - name: arm32-linux
     - name: -fsanitize=address
     - name: -fsanitize=memory
     - name: -fsanitize=undefined

@@ -300,7 +300,7 @@ env:
       - tool/travis_retry.sh sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test"
       # - tool/travis_retry.sh sudo bash -c "rm -rf '${TRAVIS_ROOT}/var/lib/apt/lists/'* && exec apt-get update -yq"
       - ls -1 "${TRAVIS_ROOT}/var/lib/apt/lists/"
-      - tool/travis_retry.sh sudo exec apt-get update -yq
+      - tool/travis_retry.sh sudo apt-get update -yq
       - |-
         tool/travis_retry.sh sudo -E apt-get $travis_apt_get_options install \
           ccache:armhf \

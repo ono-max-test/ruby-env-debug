@@ -285,8 +285,8 @@ env:
           zlib1g-dev:i386 \
           zlib1g:i386
 
-  - &arm32-linux
-    name: arm32-linux
+  - &armhf-linux
+    name: armhf-linux
     arch: arm64
     compiler: gcc-8
     env:
@@ -296,7 +296,7 @@ env:
       - SETARCH='setarch armhf --verbose --3gb'
     before_install:
       - uname -a
-      - dpkg --add-architecture armhf
+      - sudo dpkg --add-architecture armhf
       - tool/travis_retry.sh sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test"
       - tool/travis_retry.sh sudo bash -c "rm -rf '${TRAVIS_ROOT}/var/lib/apt/lists/'* && exec apt-get update -yq"
       - |-
@@ -412,7 +412,7 @@ matrix:
     - <<: *x86_64-linux
     - <<: *arm64-linux
     - <<: *i686-linux
-    - <<: *arm32-linux
+    - <<: *armhf-linux
     - <<: *pedanticism
     - <<: *assertions
     - <<: *baseruby
@@ -433,7 +433,7 @@ matrix:
     - <<: *NO_THREADED_CODE
   allow_failures:
     - name: arm64-linux
-    - name: arm32-linux
+    - name: armhf-linux
     - name: -fsanitize=address
     - name: -fsanitize=memory
     - name: -fsanitize=undefined

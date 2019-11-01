@@ -454,16 +454,21 @@ before_script:
   - chmod u-w ..
   - $SETARCH make -s $JOBS
   - |-
-    date; : # Debugging "Permission defined" failure on darwin like https://travis-ci.org/ruby/ruby/jobs/508683759
-    if ! make install; then
-      if [ "$(uname)" = Darwin ]; then
-        # Debugging "Permission defined" failure on darwin like https://travis-ci.org/ruby/ruby/jobs/508683759
-        set -x
-        date
-        ./miniruby -e 'ARGV.map{|path|[path,File.stat(path)]}.sort_by{|path,st|st.mtime}.each{|path,st|p mtime:st.mtime.to_f, ctime:st.ctime.to_f, path:path}' .ext/.timestamp/.RUBYCOMMONDIR*time .ext/common/bigdecimal/*.rb ../ext/bigdecimal/lib/bigdecimal/*.rb . .. .ext .ext/common .ext/common/bigdecimal ext/bigdecimal ../ext ../ext/bigdecimal ../ext/bigdecimal/lib ../ext/bigdecimal/lib/bigdecimal
-        make COPY='cp -f' install
+    date; : # Debugging "Permission defined" failure on arm64 like https://travis-ci.org/ruby/ruby/jobs/606916890#L2412
+    if ! make --debug --trace install; then
+      if [ "$(uname -m)" = aarch64 ]; then
+        (
+          set -x
+          date
+          id
+          stat .ext/common
+          ./miniruby -e 'ARGV.map { |path| [path, File.stat(path)] }.sort_by { |path, st| st.mtime }.each { |path, st| p mtime:st.mtime.to_f, ctime:st.ctime.to_f, mode:sprintf("%o", st.mode), uid:st.uid, gid:st.gid, path:path }' .ext/common .ext/common/*.rb
+          if ! make --debug --trace CP='cp -f' install; then
+            make --debug --trace COPY='cp -f' install
+          fi
+        )
       else
-        exit 1
+        false
       fi
     fi
   - ccache --show-stats

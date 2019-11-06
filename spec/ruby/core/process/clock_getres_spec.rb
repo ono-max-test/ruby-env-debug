@@ -13,7 +13,7 @@ describe "Process.clock_getres" do
           times << Process.clock_gettime(value, :nanosecond)
         end
         reported = Process.clock_getres(value, :nanosecond)
-        p "[DEBUG] name: #{name}, value: #{value}, reported: #{reported}"
+        p "[DEBUG] name: #{name}, value: #{value}, reported: #{reported}, times0: #{times[0]}, times1: #{times[1]}"
 
         # The clock should not be more accurate than reported (times should be
         # a multiple of reported precision.)

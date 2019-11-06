@@ -28,6 +28,6 @@ steps:
       # make test-all
       - /usr/bin/sudo -H -u test -- make test-all
     failure: ignore # `make test` is failing on arm32
-trigger:
-  branch:
-    - master
+# trigger:
+#   branch:
+#     - master

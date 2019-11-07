@@ -455,21 +455,11 @@ before_script:
   - $SETARCH make -s $JOBS
   - |-
     date; : # Debugging "Permission defined" failure on arm64 like https://travis-ci.org/ruby/ruby/jobs/606916890#L2412
-    if ! make --debug --trace install; then
-      if [ "$(uname -m)" = aarch64 ]; then
-        (
-          set -x
-          date
-          id
-          stat .ext/common
-          ./miniruby -e 'ARGV.map { |path| [path, File.stat(path)] }.sort_by { |path, st| st.mtime }.each { |path, st| p mtime:st.mtime.to_f, ctime:st.ctime.to_f, mode:sprintf("%o", st.mode), uid:st.uid, gid:st.gid, path:path }' .ext/common .ext/common/*.rb
-          if ! make --debug --trace CP='cp -f' install; then
-            make --debug --trace COPY='cp -f' install
-          fi
-        )
-      else
-        false
-      fi
+    ls -l --full-time -t $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb || true
+    # The argument COPY is used in ext/*/Makefile.
+    if ! make --debug --trace V=1 COPY='pwd; (ls -l --full-time -t ../../.ext/.timestamp/.RUBYCOMMONDIR.time ../../.ext/common/*.rb || true); cp -v' install; then
+      date
+      false
     fi
   - ccache --show-stats
   - |-

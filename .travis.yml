@@ -450,14 +450,16 @@ before_script:
   - $SETARCH make reconfig
   - find .ext/include -type f || true
   - cp -pr config.cache config.status .ext/include ../config_2nd
+  - find ../config_2nd -type f || true
   - (cd .. && exec diff -ru config_1st config_2nd)
   - chmod u+w ..
   - rm -rf ~/config_2nd
   - mv ../config_2nd ~
+  - find ~/config_2nd -type f || true
   - chmod u-w ..
   - ls -l --full-time -t $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb || true
   # - $SETARCH make -s $JOBS
-  - $SETARCH make V=1 $JOBS
+  - $SETARCH make --debug --trace V=1 $JOBS
   - |-
     date; : # Debugging "Permission defined" failure on arm64 like https://travis-ci.org/ruby/ruby/jobs/606916890#L2412
     ls -l --full-time -t $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb || true

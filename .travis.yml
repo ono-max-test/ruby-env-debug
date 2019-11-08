@@ -270,6 +270,7 @@ env:
       - GCC_FLAGS=-m32
       - CXX='g++-8 -m32'
       - debugflags=-g0
+      - JOBS=
       - SETARCH='setarch i686 --verbose --3gb'
     # # Not using addon to control retries
     # addons:
@@ -438,6 +439,7 @@ before_script:
   - |-
     if [ -d ~/config_2nd ]; then
       cp -pr ~/config_2nd build
+      find build -type f
     else
       mkdir build
     fi
@@ -467,6 +469,7 @@ before_script:
   - $SETARCH make -s $JOBS
   # Check if the .RUBYCOMMONDIR.time file is older than .ext/common/*.rb files.
   # Otherwise it causes "Permission defined" error in "make install".
+  - ls -rt $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb
   - test "$(ls -rt .ext/.timestamp/.RUBYCOMMONDIR.time .ext/common/*.rb | head -1)" = ".ext/.timestamp/.RUBYCOMMONDIR.time"
   - date; make install
   - ccache --show-stats
@@ -482,12 +485,12 @@ script:
   - $SETARCH make -s -o showflags leaked-globals
 
 # Branch matrix.  Not all branches are Travis-ready so we limit branches here.
-branches:
-  only:
-    - master
-    - ruby_2_4
-    - ruby_2_5
-    - ruby_2_6
+# branches:
+#   only:
+#     - master
+#     - ruby_2_4
+#     - ruby_2_5
+#     - ruby_2_6
 
 # We want to be notified when something happens.
 notifications:

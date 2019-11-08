@@ -445,8 +445,10 @@ before_script:
     [ "$CC" = "`sed -n s/^ac_cv_prog_CC=//p config.cache`" ] ||
     (set -x; exec rm config.cache)
   - $SETARCH ../configure -C --disable-install-doc --prefix=$RUBY_PREFIX $CONFIG_FLAG
+  - find .ext/include -type f || true
   - cp -pr config.cache config.status .ext/include ../config_1st
   - $SETARCH make reconfig
+  - find .ext/include -type f || true
   - cp -pr config.cache config.status .ext/include ../config_2nd
   - (cd .. && exec diff -ru config_1st config_2nd)
   - chmod u+w ..
@@ -454,7 +456,8 @@ before_script:
   - mv ../config_2nd ~
   - chmod u-w ..
   - ls -l --full-time -t $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb || true
-  - $SETARCH make -s $JOBS
+  # - $SETARCH make -s $JOBS
+  - $SETARCH make V=1 $JOBS
   - |-
     date; : # Debugging "Permission defined" failure on arm64 like https://travis-ci.org/ruby/ruby/jobs/606916890#L2412
     ls -l --full-time -t $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb || true

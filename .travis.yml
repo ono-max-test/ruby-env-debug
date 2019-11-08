@@ -459,7 +459,16 @@ before_script:
   - chmod u-w ..
   - ls -l --full-time -t $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb || true
   # - $SETARCH make -s $JOBS
-  - $SETARCH make --debug --trace V=1 $JOBS
+  # - $SETARCH make --debug --trace V=1 $JOBS
+  - |-
+    if [ "$(uname -m)" = aarch64 ]; then
+      $SETARCH make -s
+    else
+      $SETARCH make -s $JOBS
+    fi
+  # .RUBYCOMMONDIR.time file must be older than .ext/common/*.rb files.
+  # The parallel make execution can create the newer .RUBYCOMMONDIR.time file.
+  - test "$(ls -rt .ext/.timestamp/.RUBYCOMMONDIR.time .ext/common/*.rb | head -1)" = ".ext/.timestamp/.RUBYCOMMONDIR.time"
   - |-
     date; : # Debugging "Permission defined" failure on arm64 like https://travis-ci.org/ruby/ruby/jobs/606916890#L2412
     ls -l --full-time -t $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb || true

@@ -425,9 +425,8 @@ before_script:
   - rm -f config.status Makefile rbconfig.rb .rbconfig.time
   - |-
     if [ -d ~/config_2nd ]; then
-      ls -l --full-time -t $(pwd)/config_2nd/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/config_2nd/.ext/common/*.rb || true
       cp -pr ~/config_2nd build
-      ls -l --full-time -t $(pwd)/build/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/build/.ext/common/*.rb || true
+      find build -type f | xargs ls -l
     else
       mkdir build
     fi
@@ -436,7 +435,6 @@ before_script:
   - chmod -R u+w build config_1st config_2nd
   - cd build
   - ccache --show-stats
-  - ls -l --full-time -t $(pwd)/.ext/.timestamp/.RUBYCOMMONDIR.time $(pwd)/.ext/common/*.rb || true
   - |-
     case "$CC" in
     gcc*)   CC="ccache $CC${GCC_FLAGS:+ }$GCC_FLAGS -fno-diagnostics-color";;

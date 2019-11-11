@@ -378,29 +378,28 @@ matrix:
   include:
     # Build every commit:
     - <<: *x86_64-linux
-    - <<: *i686-linux
-    - <<: *pedanticism
-    - <<: *assertions
-    - <<: *baseruby
-    - <<: *rubyspec
-    - <<: *dependency
-    # Build every commit (Allowed Failures):
     - <<: *arm64-linux
-    - <<: *ASAN
-    - <<: *MSAN
-    - <<: *UBSAN
+    - <<: *i686-linux
+    # - <<: *pedanticism
+    # - <<: *assertions
+    # - <<: *baseruby
+    # - <<: *rubyspec
+    # - <<: *dependency
+    # Build every commit (Allowed Failures):
+    # - <<: *ASAN
+    # - <<: *MSAN
+    # - <<: *UBSAN
     # Cron only:
-    - <<: *jemalloc
-    - <<: *VM_CHECK_MODE
-    - <<: *SUPPORT_JOKE
-    - <<: *CPDEBUG
-    - <<: *WITH_COROUTINE_UCONTEXT
-    - <<: *WITH_COROUTINE_COPY
-    - <<: *TOKEN_THREADED_CODE
-    - <<: *CALL_THREADED_CODE
-    - <<: *NO_THREADED_CODE
+    # - <<: *jemalloc
+    # - <<: *VM_CHECK_MODE
+    # - <<: *SUPPORT_JOKE
+    # - <<: *CPDEBUG
+    # - <<: *WITH_COROUTINE_UCONTEXT
+    # - <<: *WITH_COROUTINE_COPY
+    # - <<: *TOKEN_THREADED_CODE
+    # - <<: *CALL_THREADED_CODE
+    # - <<: *NO_THREADED_CODE
   allow_failures:
-    - name: arm64-linux
     - name: -fsanitize=address
     - name: -fsanitize=memory
     - name: -fsanitize=undefined
@@ -484,12 +483,12 @@ script:
   - $SETARCH make -s -o showflags leaked-globals
 
 # Branch matrix.  Not all branches are Travis-ready so we limit branches here.
-branches:
-  only:
-    - master
-    - ruby_2_4
-    - ruby_2_5
-    - ruby_2_6
+# branches:
+#   only:
+#     - master
+#     - ruby_2_4
+#     - ruby_2_5
+#     - ruby_2_6
 
 # We want to be notified when something happens.
 notifications:

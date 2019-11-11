@@ -453,6 +453,10 @@ before_script:
   - rm -rf ~/config_2nd
   - mv ../config_2nd ~
   - chmod u-w ..
+  - |-
+    if [ "$(uname -m)" = aarch64 ]; then
+      mkdir -p .ext/common && touch .ext/.timestamp/.RUBYCOMMONDIR.time
+    fi
   - $SETARCH make -s $JOBS
   - |-
     date; : # Debugging "Permission defined" failure on darwin like https://travis-ci.org/ruby/ruby/jobs/508683759

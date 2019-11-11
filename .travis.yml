@@ -454,7 +454,7 @@ before_script:
   - chmod u-w ..
   - |-
     if [ "$(uname -m)" = aarch64 ]; then
-      mkdir -p .ext/common && touch .ext/.timestamp/.RUBYCOMMONDIR.time
+      mkdir -p .ext/common .ext/.timestamp && touch .ext/.timestamp/.RUBYCOMMONDIR.time
     fi
   - $SETARCH make -s $JOBS
   - |-

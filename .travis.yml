@@ -436,30 +436,30 @@ matrix:
     # Build every commit:
     - <<: *x86_64-linux
     - <<: *arm64-linux
-    - <<: *i686-linux
-    - <<: *arm32-linux
+    # - <<: *i686-linux
+    # - <<: *arm32-linux
     - <<: *s390x-linux
     - <<: *ppc64le-linux
-    - <<: *pedanticism
-    - <<: *assertions
-    - <<: *baseruby
-    - <<: *rubyspec24
-    - <<: *rubyspec27
-    - <<: *dependency
+    # - <<: *pedanticism
+    # - <<: *assertions
+    # - <<: *baseruby
+    # - <<: *rubyspec24
+    # - <<: *rubyspec27
+    # - <<: *dependency
     # Build every commit (Allowed Failures):
-    - <<: *ASAN
-    - <<: *MSAN
-    - <<: *UBSAN
+    # - <<: *ASAN
+    # - <<: *MSAN
+    # - <<: *UBSAN
     # Cron only:
-    - <<: *jemalloc
-    - <<: *VM_CHECK_MODE
-    - <<: *SUPPORT_JOKE
-    - <<: *CPDEBUG
-    - <<: *WITH_COROUTINE_UCONTEXT
-    - <<: *WITH_COROUTINE_COPY
-    - <<: *TOKEN_THREADED_CODE
-    - <<: *CALL_THREADED_CODE
-    - <<: *NO_THREADED_CODE
+    # - <<: *jemalloc
+    # - <<: *VM_CHECK_MODE
+    # - <<: *SUPPORT_JOKE
+    # - <<: *CPDEBUG
+    # - <<: *WITH_COROUTINE_UCONTEXT
+    # - <<: *WITH_COROUTINE_COPY
+    # - <<: *TOKEN_THREADED_CODE
+    # - <<: *CALL_THREADED_CODE
+    # - <<: *NO_THREADED_CODE
   allow_failures:
     - name: -fsanitize=address
     - name: -fsanitize=memory
@@ -545,12 +545,12 @@ script:
   - $SETARCH make -s -o showflags leaked-globals
 
 # Branch matrix.  Not all branches are Travis-ready so we limit branches here.
-branches:
-  only:
-    - master
-    - ruby_2_4
-    - ruby_2_5
-    - ruby_2_6
+# branches:
+#   only:
+#     - master
+#     - ruby_2_4
+#     - ruby_2_5
+#     - ruby_2_6
 
 # We want to be notified when something happens.
 notifications:

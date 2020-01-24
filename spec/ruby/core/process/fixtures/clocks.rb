@@ -11,6 +11,10 @@ module ProcessSpecs
       clocks -= [:CLOCK_BOOTTIME_ALARM, :CLOCK_REALTIME_ALARM]
     end
 
+    clocks = clocks.reject { |clock, value|
+      [:CLOCK_BOOTTIME, :CLOCK_TAI].include?(clock)
+    }
+
     clocks.sort.map { |c|
       [c, Process.const_get(c)]
     }

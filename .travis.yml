@@ -533,6 +533,8 @@ script:
   - cat /etc/hosts
   - ip a
   - ip r
+  - $RUBY_PREFIX/bin/ruby -v
+  - strace -f $RUBY_PREFIX/bin/ruby -r 'socket.so' -e 'Socket.ip_address_list'
   - strace -f $SETARCH make -s test-spec MSPECOPT=-ff SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_spec.rb" # not using `-j` because sometimes `mspec -j` silently dies
   - $SETARCH make -s -o showflags leaked-globals
 

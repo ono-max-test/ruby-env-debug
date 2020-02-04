@@ -210,7 +210,10 @@ ip_inspect(VALUE sock)
     union_sockaddr addr;
     socklen_t len = (socklen_t)sizeof addr;
     ID id;
-    printf("[DEBUG] ipsocket.c ip_inspect getsockname\n");
+
+    if (addr.addr.sa_family == AF_NETLINK) {
+        printf("[DEBUG] ipsocket.c ip_inspect getsockname\n");
+    }
     if (fptr && fptr->fd >= 0 &&
 	getsockname(fptr->fd, &addr.addr, &len) >= 0 &&
 	(id = rsock_intern_family(addr.addr.sa_family)) != 0) {
@@ -270,7 +273,9 @@ ip_addr(int argc, VALUE *argv, VALUE sock)
     if (argc < 1 || !rsock_revlookup_flag(argv[0], &norevlookup))
 	norevlookup = fptr->mode & FMODE_NOREVLOOKUP;
 
-    printf("[DEBUG] ipsocket.c ip_addr getsockname\n");
+    if (addr.addr.sa_family == AF_NETLINK) {
+        printf("[DEBUG] ipsocket.c ip_addr getsockname\n");
+    }
     if (getsockname(fptr->fd, &addr.addr, &len) < 0)
 	rb_sys_fail("getsockname(2)");
     return rsock_ipaddr(&addr.addr, len, norevlookup);

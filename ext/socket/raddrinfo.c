@@ -642,6 +642,10 @@ rsock_fd_family(int fd)
     struct sockaddr sa = { 0 };
     socklen_t sa_len = sizeof(sa);
 
+
+    if (sa.sa_family == AF_NETLINK) {
+        printf("[DEBUG] raddrinfo.c rsock_fd_family getsockname\n");
+    }
     if (fd < 0 || getsockname(fd, &sa, &sa_len) != 0 ||
         (size_t)sa_len < offsetof(struct sockaddr, sa_family) + sizeof(sa.sa_family)) {
 	return AF_UNSPEC;

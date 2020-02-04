@@ -29,6 +29,9 @@ ruby_getsockname(int s, struct sockaddr * name,
 {
     int err = errno;
     errno = 0;
+    if (name.sa_family == AF_NETLINK) {
+        printf("[DEBUG] close.c ruby_getsockname getsockname\n");
+    }
     s = getsockname(s, name, namelen);
     if (errno == ECONNRESET) {
 	errno = 0;

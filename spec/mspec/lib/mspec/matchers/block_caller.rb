@@ -4,7 +4,9 @@ class BlockingMatcher
       block.call
     end
 
-    loop do
+    # loop do
+    100.times do |i|
+      puts "[DEBUG] block_caller.rb [#{i}] #{t.status}"
       case t.status
       when "sleep"    # blocked
         t.kill

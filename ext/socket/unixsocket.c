@@ -146,6 +146,8 @@ unix_path(VALUE sock)
 	struct sockaddr_un addr;
 	socklen_t len = (socklen_t)sizeof(addr);
 	socklen_t len0 = len;
+
+        printf("[DEBUG] unixsocket.c unix_path getsockname\n");
 	if (getsockname(fptr->fd, (struct sockaddr*)&addr, &len) < 0)
             rsock_sys_fail_path("getsockname(2)", fptr->pathv);
         if (len0 < len) len = len0;
@@ -499,6 +501,7 @@ unix_addr(VALUE sock)
 
     GetOpenFile(sock, fptr);
 
+    printf("[DEBUG] unixsocket.c unix_addr getsockname\n");
     if (getsockname(fptr->fd, (struct sockaddr*)&addr, &len) < 0)
         rsock_sys_fail_path("getsockname(2)", fptr->pathv);
     if (len0 < len) len = len0;

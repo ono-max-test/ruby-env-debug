@@ -508,7 +508,7 @@ before_script:
   - rm -rf ~/config_2nd
   - mv ../config_2nd ~
   - chmod u-w ..
-  - $SETARCH make -s $JOBS
+  - $SETARCH make $JOBS
   - |-
     date; : # Debugging "Permission defined" failure on darwin like https://travis-ci.org/ruby/ruby/jobs/508683759
     if ! make install; then
@@ -535,6 +535,7 @@ script:
   - cat /etc/hosts
   - ip a
   - ip r
+  - ip link
   - $RUBY_PREFIX/bin/ruby -v
   - strace -f $RUBY_PREFIX/bin/ruby -r 'socket.so' -e 'Socket.ip_address_list'
   - strace -f $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_spec.rb:7"

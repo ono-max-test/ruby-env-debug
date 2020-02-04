@@ -358,6 +358,8 @@ bsock_getsockname(VALUE sock)
     rb_io_t *fptr;
 
     GetOpenFile(sock, fptr);
+
+    printf("[DEBUG] basicsocket.c bsock_getsockname getsockname\n");
     if (getsockname(fptr->fd, &buf.addr, &len) < 0)
 	rb_sys_fail("getsockname(2)");
     if (len0 < len) len = len0;
@@ -479,6 +481,7 @@ bsock_local_address(VALUE sock)
     rb_io_t *fptr;
 
     GetOpenFile(sock, fptr);
+    printf("[DEBUG] basicsocket.c bsock_local_address getsockname\n");
     if (getsockname(fptr->fd, &buf.addr, &len) < 0)
 	rb_sys_fail("getsockname(2)");
     if (len0 < len) len = len0;

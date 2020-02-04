@@ -541,6 +541,8 @@ script:
   - $RUBY_PREFIX/bin/ruby -r 'socket.so' -e 'Socket.ip_address_list'
   # OK
   - $RUBY_PREFIX/bin/ruby ../spec/ruby/library/socket/socket/udp_server_loop_debug2_spec.rb
+  # ?
+  - $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug3_spec.rb"
   # Error
   - $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug_spec.rb"
   # - strace -f $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_spec.rb"

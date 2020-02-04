@@ -147,9 +147,11 @@ unix_path(VALUE sock)
 	socklen_t len = (socklen_t)sizeof(addr);
 	socklen_t len0 = len;
 
+        /*
         if (addr.sa_family == AF_NETLINK) {
             printf("[DEBUG] unixsocket.c unix_path getsockname\n");
         }
+        */
 	if (getsockname(fptr->fd, (struct sockaddr*)&addr, &len) < 0)
             rsock_sys_fail_path("getsockname(2)", fptr->pathv);
         if (len0 < len) len = len0;
@@ -503,9 +505,11 @@ unix_addr(VALUE sock)
 
     GetOpenFile(sock, fptr);
 
+    /*
     if (addr.sa_family == AF_NETLINK) {
         printf("[DEBUG] unixsocket.c unix_addr getsockname\n");
     }
+    */
     if (getsockname(fptr->fd, (struct sockaddr*)&addr, &len) < 0)
         rsock_sys_fail_path("getsockname(2)", fptr->pathv);
     if (len0 < len) len = len0;

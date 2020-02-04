@@ -141,6 +141,8 @@ env:
     name: ppc64le-linux
     arch: ppc64le
     <<: *gcc-8
+    env:
+      - debugflags=-g0
 
   - &jemalloc
     name: --with-jemalloc

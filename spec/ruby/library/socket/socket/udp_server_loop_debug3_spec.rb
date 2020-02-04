@@ -9,5 +9,6 @@ describe 'Socket.udp_server_loop debug' do
 
     # socket_block.should block_caller
     Socket.ip_address_list
+    1.should be_true
   end
 end

@@ -7,8 +7,10 @@ describe 'Socket.udp_server_loop debug' do
     #   Socket.ip_address_list
     # end
 
-    # socket_block.should block_caller
-    Socket.ip_address_list
+    socket_block = proc { Socket.ip_address_list }
+
+    socket_block.should block_caller
+    # Socket.ip_address_list
     true.should be_true
   end
 end

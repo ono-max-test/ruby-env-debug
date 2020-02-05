@@ -509,7 +509,7 @@ before_script:
   - rm -rf ~/config_2nd
   - mv ../config_2nd ~
   - chmod u-w ..
-  - $SETARCH make $JOBS
+  - $SETARCH make -s $JOBS
   - |-
     date; : # Debugging "Permission defined" failure on darwin like https://travis-ci.org/ruby/ruby/jobs/508683759
     if ! make install; then
@@ -541,14 +541,15 @@ script:
   # OK
   - $RUBY_PREFIX/bin/ruby -r 'socket.so' -e 'Socket.ip_address_list'
   # OK
-  - strace -f $RUBY_PREFIX/bin/ruby ../spec/ruby/library/socket/socket/udp_server_loop_debug2_spec.rb
+  - $RUBY_PREFIX/bin/ruby ../spec/ruby/library/socket/socket/udp_server_loop_debug2_spec.rb
   # ?
-  - strace -f $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug3_spec.rb"
-  - ltrace -f $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug3_spec.rb"
+  - $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug3_spec.rb"
+  # - ltrace -f $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug3_spec.rb"
+  # - strace -f $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug3_spec.rb"
   # Error
-  - $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug_spec.rb"
+  # - $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_debug_spec.rb"
   # - strace -f $SETARCH make test-spec MSPECOPT="-ff -V" SPECOPTS="../spec/ruby/library/socket/socket/udp_server_loop_spec.rb"
-  - $SETARCH make -s -o showflags leaked-globals
+  # - $SETARCH make -s -o showflags leaked-globals
 
 # Branch matrix.  Not all branches are Travis-ready so we limit branches here.
 # branches:

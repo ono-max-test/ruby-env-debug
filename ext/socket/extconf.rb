@@ -514,6 +514,7 @@ EOF
     if checking_for("ipv6") {try_link(AF_INET6_SOCKET_CREATION_TEST)}
       $defs << "-DENABLE_IPV6" << "-DINET6"
       ipv6 = true
+      puts "[DEBUG] ext/socket/extconf.rb IPv6 INET6 is enabled."
     end
   end
 
@@ -679,3 +680,5 @@ SRC
   end
   create_makefile("socket")
 end
+
+puts "[DEBUG] ext/socket/extconf.rb defs: #{$defs}"

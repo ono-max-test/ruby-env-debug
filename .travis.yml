@@ -500,7 +500,7 @@ before_script:
   - rm -rf ~/config_2nd
   - mv ../config_2nd ~
   - chmod u-w ..
-  - $SETARCH make -s $JOBS
+  - $SETARCH make $JOBS V=1
   - make -s install
   - |-
     [ -z "${GEMS_FOR_TEST}" ] ||

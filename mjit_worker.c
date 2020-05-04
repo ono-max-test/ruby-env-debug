@@ -1195,7 +1195,10 @@ mjit_worker(void)
 {
 #ifndef _MSC_VER
     if (pch_status == PCH_NOT_READY) {
-        make_pch();
+        /* Disable making PCH explicitly. */
+        /* make_pch(); */
+        verbose(2, "Disabling making PCH explicitly");
+        pch_status = PCH_FAILED;
     }
 #endif
     if (pch_status == PCH_FAILED) {

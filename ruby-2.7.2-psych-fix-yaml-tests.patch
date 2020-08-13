@@ -43,7 +43,7 @@ diff --git a/test/psych/test_psych.rb b/test/psych/test_psych.rb
 index eeadc864ef4e..e557feffb76a 100644
 --- a/test/psych/test_psych.rb
 +++ b/test/psych/test_psych.rb
-@@ -178,17 +178,17 @@ def test_add_builtin_type
+@@ -121,17 +121,17 @@ def test_add_builtin_type
  
    def test_domain_types
      got = nil
@@ -65,7 +65,7 @@ index eeadc864ef4e..e557feffb76a 100644
      assert_equal({ 'hello' => 'world' }, got)
    end
  
-@@ -295,16 +295,13 @@ def test_callbacks
+@@ -170,16 +170,13 @@ def test_callbacks
      types = []
      appender = lambda { |*args| types << args }
  

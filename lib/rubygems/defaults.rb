@@ -32,20 +32,20 @@ module Gem
              [
                File.dirname(RbConfig::CONFIG['sitedir']),
                'Gems',
-               RbConfig::CONFIG['ruby_version']
+               RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
              ]
            elsif RbConfig::CONFIG['rubylibprefix'] then
              [
               RbConfig::CONFIG['rubylibprefix'],
               'gems',
-              RbConfig::CONFIG['ruby_version']
+              RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
              ]
            else
              [
                RbConfig::CONFIG['libdir'],
                ruby_engine,
                'gems',
-               RbConfig::CONFIG['ruby_version']
+               RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
              ]
            end
 
@@ -75,7 +75,8 @@ module Gem
 
   def self.user_dir
     parts = [Gem.user_home, '.gem', ruby_engine]
-    parts << RbConfig::CONFIG['ruby_version'] unless RbConfig::CONFIG['ruby_version'].empty?
+    ruby_version_dir_name = RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
+    parts << ruby_version_dir_name unless ruby_version_dir_name.empty?
     File.join parts
   end
 
@@ -172,11 +173,30 @@ module Gem
     return nil unless RbConfig::CONFIG.key? 'vendordir'
 
     File.join RbConfig::CONFIG['vendordir'], 'gems',
-              RbConfig::CONFIG['ruby_version']
+              RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
   end
 
   ##
-  # Default options for gem commands.
+  # Default options for gem commands for Ruby packagers.
+  #
+  # The options here should be structured as an array of string "gem"
+  # command names as keys and a string of the default options as values.
+  #
+  # Example:
+  #
+  # def self.operating_system_defaults
+  #   {
+  #       'install' => '--no-rdoc --no-ri --env-shebang',
+  #       'update' => '--no-rdoc --no-ri --env-shebang'
+  #   }
+  # end
+
+  def self.operating_system_defaults
+    {}
+  end
+
+  ##
+  # Default options for gem commands for Ruby implementers.
   #
   # The options here should be structured as an array of string "gem"
   # command names as keys and a string of the default options as values.

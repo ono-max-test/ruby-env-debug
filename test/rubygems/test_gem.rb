@@ -1191,7 +1191,8 @@ class TestGem < Gem::TestCase
 
   def test_self_user_dir
     parts = [@userhome, '.gem', Gem.ruby_engine]
-    parts << RbConfig::CONFIG['ruby_version'] unless RbConfig::CONFIG['ruby_version'].empty?
+    ruby_version_dir_name = RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
+    parts << ruby_version_dir_name unless ruby_version_dir_name.empty?
 
     assert_equal File.join(parts), Gem.user_dir
   end
@@ -1318,7 +1319,7 @@ class TestGem < Gem::TestCase
   def test_self_vendor_dir
     expected =
       File.join RbConfig::CONFIG['vendordir'], 'gems',
-                RbConfig::CONFIG['ruby_version']
+                RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
 
     assert_equal expected, Gem.vendor_dir
   end
@@ -1834,6 +1835,13 @@ You may need to `gem install -g` to install missing gems
     assert_equal add_bundler_full_name(%W(a-1)), loaded_spec_names
   ensure
     ENV['RUBYGEMS_GEMDEPS'] = rubygems_gemdeps
+  end
+
+  def test_operating_system_defaults
+    operating_system_defaults = Gem.operating_system_defaults
+
+    assert operating_system_defaults != nil
+    assert operating_system_defaults.is_a? Hash
   end
 
   def test_platform_defaults

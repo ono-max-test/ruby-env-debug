@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -x
+
 # %patch0 -p1
 # cat ruby-2.3.0-ruby_version.patch | patch -p1
 
@@ -30,19 +34,28 @@
 
 
 # %patch14 -p1
-# Patch14: ruby-2.7.2-psych-fix-yaml-tests.patch | patch -p1
+# cat ruby-2.7.2-psych-fix-yaml-tests.patch | patch -p1
 
 # %patch15 -p1
-# Patch15: ruby-2.6.0-library-options-to-MAINLIBS.patch | patch -p1
+# cat ruby-2.6.0-library-options-to-MAINLIBS.patch | patch -p1
 
 # %patch16 -p1
-# %patch20 -p1
-# %patch22 -p1
-# %patch23 -p1
-# %patch24 -p1
+cat ruby-2.5.1-Avoid-need-of-C++-compiler-to-pass-the-test-suite.patch | patch -p1
 
-# Patch16: ruby-2.5.1-Avoid-need-of-C++-compiler-to-pass-the-test-suite.patch | patch -p1
-# Patch20: ruby-2.6.0-rdoc-6.0.1-fix-template-typo.patch | patch -p1
-# Patch24: ruby-2.6.0-configure-fstack-protector-strong.patch | patch -p1
-# Patch22: ruby-2.6.0-config-support-include-directive.patch | patch -p1
-# Patch23: ruby-2.6.0-use-larger-keys-for-SSL-tests.patch | patch -p1
+# %patch20 -p1
+cat ruby-2.6.0-rdoc-6.0.1-fix-template-typo.patch | patch -p1
+
+# %patch22 -p1
+cat ruby-2.6.0-config-support-include-directive.patch | patch -p1
+
+# %patch23 -p1
+cat ruby-2.6.0-use-larger-keys-for-SSL-tests.patch | patch -p1
+
+# %patch24 -p1
+cat ruby-2.6.0-configure-fstack-protector-strong.patch | patch -p1
+
+# %patch41 -p1
+# %patch42 -p1
+
+# Patch41: ruby-2.8.0-Brace-the-fact-that-lchmod-can-EOPNOTSUPP.patch
+# Patch42: ruby-2.8.0-Moved-not-implemented-method-tests.patch

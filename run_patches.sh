@@ -32,13 +32,28 @@ set -ex
 # git am ruby-2.1.0-always-use-i386.patch
 
 # %patch4 -p1
-cat ruby-2.1.0-custom-rubygems-location.patch | patch -p1
+# cat ruby-2.1.0-custom-rubygems-location.patch | patch -p1
 
 # %patch5 -p1
+
+cat ruby-1.9.3-mkmf-verbose.patch | patch -p1
+
 # %patch6 -p1
+
+cat ruby-2.1.0-Allow-to-specify-additional-preludes-by-configuratio.patch | patch -p1
+
 # %patch7 -p1
+
+cat ruby-2.2.3-Generate-preludes-using-miniruby.patch | patch -p1
+
 # %patch9 -p1
+
+cat ruby-2.3.1-Rely-on-ldd-to-detect-glibc.patch | patch -p1
+
 # %patch10 -p1
+
+cat ruby-2.5.0-Add-Gem.operating_system_defaults.patch | patch -p1
+
 # %patch15 -p1
 # %patch16 -p1
 # %patch20 -p1

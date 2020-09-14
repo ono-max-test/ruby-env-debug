@@ -4397,6 +4397,13 @@ AC_SUBST(rubyarchhdrdir)dnl
 AC_SUBST(sitearchhdrdir)dnl
 AC_SUBST(vendorarchhdrdir)dnl
 
+AC_ARG_WITH(prelude,
+		AS_HELP_STRING([--with-prelude=FILE-LIST], [specify additional preludes separated by space]),
+		[prelude=$withval])
+if test "$prelude" != ""; then
+    AC_SUBST(OPTIONAL_PRELUDES, $prelude)
+fi
+
 AC_ARG_WITH(mantype,
 	AS_HELP_STRING([--with-mantype=TYPE], [specify man page type; TYPE is one of man and doc]),
 		[

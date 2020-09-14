@@ -147,7 +147,7 @@ ALLOBJS       = $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(INITOBJS)
 GOLFOBJS      = goruby.$(OBJEXT) golf_prelude.$(OBJEXT)
 
 DEFAULT_PRELUDES = $(GEM_PRELUDE)
-PRELUDE_SCRIPTS = $(srcdir)/prelude.rb $(DEFAULT_PRELUDES)
+PRELUDE_SCRIPTS = $(srcdir)/prelude.rb $(DEFAULT_PRELUDES) $(OPTIONAL_PRELUDES)
 GEM_PRELUDE   = $(srcdir)/gem_prelude.rb
 PRELUDES      = {$(srcdir)}prelude.c {$(srcdir)}miniprelude.c
 GOLFPRELUDES  = {$(srcdir)}golf_prelude.c
@@ -962,9 +962,9 @@ $(MINIPRELUDE_C): $(COMPILE_PRELUDE)
 		$(srcdir)/template/prelude.c.tmpl
 
 $(PRELUDE_C): $(COMPILE_PRELUDE) \
-	   $(PRELUDE_SCRIPTS)
+	   $(PRELUDE_SCRIPTS) $(PREP)
 	$(ECHO) generating $@
-	$(Q) $(BASERUBY) $(srcdir)/tool/generic_erb.rb -I$(srcdir) -c -o $@ \
+	$(Q) $(MINIRUBY) $(srcdir)/tool/generic_erb.rb -I$(srcdir) -c -o $@ \
 		$(srcdir)/template/prelude.c.tmpl $(PRELUDE_SCRIPTS)
 
 {$(VPATH)}golf_prelude.c: $(COMPILE_PRELUDE) {$(srcdir)}golf_prelude.rb

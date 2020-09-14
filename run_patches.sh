@@ -36,27 +36,46 @@ set -ex
 
 # %patch5 -p1
 
-cat ruby-1.9.3-mkmf-verbose.patch | patch -p1
+# cat ruby-1.9.3-mkmf-verbose.patch | patch -p1
 
 # %patch6 -p1
 
-cat ruby-2.1.0-Allow-to-specify-additional-preludes-by-configuratio.patch | patch -p1
+# cat ruby-2.1.0-Allow-to-specify-additional-preludes-by-configuratio.patch | patch -p1
 
 # %patch7 -p1
 
-cat ruby-2.2.3-Generate-preludes-using-miniruby.patch | patch -p1
+# cat ruby-2.2.3-Generate-preludes-using-miniruby.patch | patch -p1
 
 # %patch9 -p1
 
-cat ruby-2.3.1-Rely-on-ldd-to-detect-glibc.patch | patch -p1
+# cat ruby-2.3.1-Rely-on-ldd-to-detect-glibc.patch | patch -p1
 
 # %patch10 -p1
 
-cat ruby-2.5.0-Add-Gem.operating_system_defaults.patch | patch -p1
+# cat ruby-2.5.0-Add-Gem.operating_system_defaults.patch | patch -p1
 
 # %patch15 -p1
+
+# cat ruby-2.6.0-library-options-to-MAINLIBS.patch | patch -p1
+
 # %patch16 -p1
+
+# git am ruby-2.5.1-Avoid-need-of-C++-compiler-to-pass-the-test-suite.patch
+
 # %patch20 -p1
+
+# cat ruby-2.6.0-rdoc-6.0.1-fix-template-typo.patch | patch -p1
+
 # %patch22 -p1
+
+# git am ruby-2.6.0-config-support-include-directive.patch
+
 # %patch23 -p1
+
+# git am ruby-2.6.0-use-larger-keys-for-SSL-tests.patch
+
 # %patch24 -p1
+
+# git am ruby-2.6.0-configure-fstack-protector-strong.patch
+
+

@@ -17,6 +17,8 @@
 # Patch22: ruby-2.6.0-config-support-include-directive.patch
 # Patch23: ruby-2.6.0-use-larger-keys-for-SSL-tests.patch
 
+set -ex
+
 # %patch0 -p1
 cat ruby-2.3.0-ruby_version.patch | patch -p1
 

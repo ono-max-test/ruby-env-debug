@@ -20,19 +20,19 @@
 set -ex
 
 # %patch0 -p1
-cat ruby-2.3.0-ruby_version.patch | patch -p1
+# git am ruby-2.3.0-ruby_version.patch
 
 # %patch1 -p1
-cat ruby-2.1.0-Prevent-duplicated-paths-when-empty-version-string-i.patch | patch1 -p1
+# git am ruby-2.1.0-Prevent-duplicated-paths-when-empty-version-string-i.patch
 
 # %patch2 -p1
-cat ruby-2.1.0-Enable-configuration-of-archlibdir.patch | patch -p1
+# git am ruby-2.1.0-Enable-configuration-of-archlibdir.patch
 
 # %patch3 -p1
-cat ruby-2.1.0-always-use-i386.patch | patch -p1
+# git am ruby-2.1.0-always-use-i386.patch
 
 # %patch4 -p1
-# cat ruby-2.1.0-custom-rubygems-location.patch | patch -p1
+cat ruby-2.1.0-custom-rubygems-location.patch | patch -p1
 
 # %patch5 -p1
 # %patch6 -p1

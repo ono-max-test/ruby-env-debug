@@ -4288,6 +4288,10 @@ AC_ARG_WITH(vendorarchdir,
             [vendorarchdir=$withval],
             [vendorarchdir=${multiarch+'${rubysitearchprefix}/vendor_ruby'${ruby_version_dir}}${multiarch-'${vendorlibdir}/${sitearch}'}])
 
+AC_ARG_WITH(rubygemsdir,
+           AS_HELP_STRING([--with-rubygemsdir=DIR], [custom rubygems directory]),
+            [rubygemsdir=$withval])
+
 AS_IF([test "${LOAD_RELATIVE+set}"], [
     AC_DEFINE_UNQUOTED(LOAD_RELATIVE, $LOAD_RELATIVE)
     RUBY_EXEC_PREFIX=''
@@ -4312,6 +4316,7 @@ AC_SUBST(sitearchdir)dnl
 AC_SUBST(vendordir)dnl
 AC_SUBST(vendorlibdir)dnl
 AC_SUBST(vendorarchdir)dnl
+AC_SUBST(rubygemsdir)dnl
 
 AC_SUBST(CONFIGURE, "`echo $0 | sed 's|.*/||'`")dnl
 AC_SUBST(configure_args, "`echo "${ac_configure_args}" | sed 's/\\$/$$/g'`")dnl

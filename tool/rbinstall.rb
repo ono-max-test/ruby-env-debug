@@ -335,6 +335,7 @@ if CONFIG["vendordir"]
   vendorlibdir = CONFIG["vendorlibdir"]
   vendorarchlibdir = CONFIG["vendorarchdir"]
 end
+rubygemsdir = CONFIG["rubygemsdir"]
 mandir = CONFIG["mandir", true]
 docdir = CONFIG["docdir", true]
 configure_args = Shellwords.shellwords(CONFIG["configure_args"])
@@ -541,7 +542,13 @@ end
 install?(:local, :comm, :lib) do
   prepare "library scripts", rubylibdir
   noinst = %w[*.txt *.rdoc *.gemspec]
+  noinst += %w[rubygems.rb rubygems/ datadir.rb] if rubygemsdir
   install_recursive(File.join(srcdir, "lib"), rubylibdir, :no_install => noinst, :mode => $data_mode)
+  if rubygemsdir
+    noinst = %w[obsolete.rb]
+    install_recursive(File.join(srcdir, "lib", "rubygems"), File.join(rubygemsdir, "rubygems"), :mode => $data_mode)
+    install(File.join(srcdir, "lib", "rubygems.rb"), File.join(rubygemsdir, "rubygems.rb"), :mode => $data_mode)
+  end
 end
 
 install?(:local, :comm, :hdr, :'comm-hdr') do

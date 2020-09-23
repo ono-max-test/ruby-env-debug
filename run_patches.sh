@@ -78,4 +78,13 @@ set -ex
 
 # git am ruby-2.6.0-configure-fstack-protector-strong.patch
 
+# Patch41: ruby-2.8.0-Brace-the-fact-that-lchmod-can-EOPNOTSUPP.patch
+# Patch42: ruby-2.8.0-Moved-not-implemented-method-tests.patch
 
+# %patch41 -p1
+
+git am ruby-2.8.0-Brace-the-fact-that-lchmod-can-EOPNOTSUPP.patch
+
+# %patch42 -p1
+
+git am ruby-2.8.0-Moved-not-implemented-method-tests.patch

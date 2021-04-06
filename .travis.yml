@@ -21,7 +21,7 @@ language: c
 
 os: linux
 
-dist: xenial
+dist: bionic
 
 git:
   quiet: true
@@ -76,6 +76,8 @@ env:
         g++-8
         libffi-dev
         libgdbm-dev
+        libgdbm-compat-dev
+        libgdbm-compat4
         libncurses5-dev
         libncursesw5-dev
         libreadline6-dev
@@ -139,6 +141,11 @@ env:
     #     sources:
     #       - ubuntu-toolchain-r-test
     before_install:
+      # Update the /etc/hosts, because spec/ruby/library/socket/socket/getnameinfo_spec.rb fails
+      # with errors with multiple IP addresses to a single hostname (localhost in this case).
+      - export travis_hostname=`cat /etc/hosts | grep "127.0.0.1" | awk '{print $NF}'`
+      - sudo sed -i '/127.0.1.1/s/localhost/'"${travis_hostname}"'/g' /etc/hosts && unset travis_hostname
+
       - tool/travis_retry.sh sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test"
       - tool/travis_retry.sh sudo bash -c "rm -rf '${TRAVIS_ROOT}/var/lib/apt/lists/'* && exec apt-get update -yq"
       - >-
@@ -149,13 +156,14 @@ env:
         libstdc++-8-dev:i386
         libffi-dev:i386
         libffi6:i386
+        libgdbm-compat-dev:i386
+        libgdbm-compat4:i386
         libgdbm-dev:i386
-        libgdbm3:i386
+        libgdbm5:i386
         libncurses5-dev:i386
         libncurses5:i386
         libncursesw5-dev:i386
-        libreadline6-dev:i386
-        libreadline6:i386
+        libreadline-dev:i386
         libssl-dev:i386
         libssl1.0.0:i386
         linux-libc-dev:i386
@@ -181,13 +189,14 @@ env:
         libstdc++-5-dev:armhf
         libffi-dev:armhf
         libffi6:armhf
+        libgdbm-compat-dev:armhf
+        libgdbm-compat4:armhf
         libgdbm-dev:armhf
-        libgdbm3:armhf
+        libgdbm5:armhf
         libncurses5-dev:armhf
         libncurses5:armhf
         libncursesw5-dev:armhf
         libreadline6-dev:armhf
-        libreadline6:armhf
         libssl-dev:armhf
         libssl1.0.0:armhf
         linux-libc-dev:armhf

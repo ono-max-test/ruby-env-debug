@@ -14,5 +14,5 @@ echo "+ $@"
 "$@"
 
 jobs
-kill %1 || :
+kill %1
 exit 0

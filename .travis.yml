@@ -149,12 +149,15 @@ before_script:
   - |-
     if [ -n "${TEST_ALL_SKIPPED_TESTS}" ]; then
       TEST_ALL_OPTS="${TEST_ALL_OPTS} $(ci_to_excluded_test_opts "${TEST_ALL_SKIPPED_TESTS}")"
-      if [ -n "${TEST_ALL_SKIPPED_TESTS}" -a -z "${TEST_ALL_SEPARATED_TESTS}" ]; then
+      if [ -z "${TEST_ALL_SEPARATED_TESTS}" ]; then
         TEST_ALL_SEPARATED_TESTS="${TEST_ALL_SKIPPED_TESTS}"
       fi
+    fi
+  - |-
+    if [ -n "${TEST_ALL_SEPARATED_TESTS}" ]; then
       TEST_ALL_OPTS_SEPARATED="$(ci_to_included_test_opts "${TEST_ALL_SEPARATED_TESTS}")"
     fi
-  - echo TEST_ALL_SKIPPED_TESTS="${TEST_ALL_SKIPPED_TESTS}" TEST_ALL_OPTS="${TEST_ALL_OPTS}" TEST_ALL_OPTS_SEPARATED="${TEST_ALL_OPTS_SEPARATED}"
+  - echo TEST_ALL_OPTS="${TEST_ALL_OPTS}" TEST_ALL_OPTS_SEPARATED="${TEST_ALL_OPTS_SEPARATED}"
   - rm -fr .ext autom4te.cache
   - |-
     [ -d ~/.downloaded-cache ] ||

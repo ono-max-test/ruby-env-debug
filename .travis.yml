@@ -208,10 +208,10 @@ before_script:
 script:
   - $SETARCH make -s test -o showflags TESTOPTS="${TESTOPTS=$JOBS -q --tty=no}"
   - ../tool/travis_wait.sh $SETARCH make -s test-all -o exts TESTOPTS="$JOBS -q --tty=no ${TEST_ALL_OPTS}" RUBYOPT="-w"
+  # Run the failing tests separately returning ok status to check if it works,
+  # visualize them.
   - |
     if [ "${RUN_SEPARATED_TESTS}" = true -a -n "${TEST_ALL_OPTS_SEPARATED}" ]; then
-      # Run the failing tests separately returning ok status to check if it
-      # works, visualize them.
       $SETARCH make -s test-all -o exts TESTOPTS="$JOBS -v --tty=no ${TEST_ALL_OPTS_SEPARATED}" RUBYOPT="-w" || :
     fi
   - $SETARCH make -s test-spec MSPECOPT=-ff # not using `-j` because sometimes `mspec -j` silently dies

@@ -80,11 +80,6 @@ env:
     name: arm64-linux
     arch: arm64
     <<: *gcc-10
-    env:
-      # FIXME: Skip the failing TestIRB::TestInit#test_recovery_sigint test
-      # where an infinity loop might happen.
-      - TEST_ALL_SKIPPED_TESTS=""
-      - TEST_ALL_SEPARATED_TESTS="test_recovery_sigint"
 
   - &ppc64le-linux
     name: ppc64le-linux
@@ -101,9 +96,6 @@ env:
     name: s390x-linux
     arch: s390x
     <<: *gcc-10
-    env:
-      - TEST_ALL_SKIPPED_TESTS=""
-      - TEST_ALL_SEPARATED_TESTS="test_recovery_sigint"
 
   - &arm32-linux
     name: arm32-linux
@@ -112,7 +104,6 @@ env:
     compiler: arm-linux-gnueabihf-gcc
     env:
       - SETARCH='setarch linux32 --verbose --32bit'
-      - TEST_ALL_SKIPPED_TESTS="test_recovery_sigint"
     before_install:
       - sudo dpkg --add-architecture armhf
       - tool/travis_retry.sh sudo bash -c "rm -rf '${TRAVIS_ROOT}/var/lib/apt/lists/'* && exec apt-get update -yq"

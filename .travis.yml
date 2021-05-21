@@ -79,7 +79,8 @@ env:
     env:
       # FIXME: Skip the failing TestIRB::TestInit#test_recovery_sigint test
       # where an infinity loop might happen.
-      - TEST_ALL_SKIPPED_TESTS="test_recovery_sigint"
+      - TEST_ALL_SKIPPED_TESTS=""
+      - TEST_ALL_SEPARATED_TESTS="test_recovery_sigint"
 
   - &ppc64le-linux
     name: ppc64le-linux
@@ -97,7 +98,8 @@ env:
     arch: s390x
     <<: *gcc-10
     env:
-      - TEST_ALL_SKIPPED_TESTS="test_recovery_sigint"
+      - TEST_ALL_SKIPPED_TESTS=""
+      - TEST_ALL_SEPARATED_TESTS="test_recovery_sigint"
 
   - &arm32-linux
     name: arm32-linux

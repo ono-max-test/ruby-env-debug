@@ -156,6 +156,11 @@ RB_BUILTIN_TYPE(VALUE obj)
 {
     RBIMPL_ASSERT_OR_ASSUME(! RB_SPECIAL_CONST_P(obj));
 
+#if defined __GNUC__ && !defined __clang__
+    /* Don't move the access to `flags` before the preceding
+     * RB_SPECIAL_CONST_P check. */
+    __asm volatile("": : :"memory");
+#endif
     VALUE ret = RBASIC(obj)->flags & RUBY_T_MASK;
     return RBIMPL_CAST((enum ruby_value_type)ret);
 }
@@ -351,6 +356,7 @@ Check_Type(VALUE v, enum ruby_value_type t)
 
   slowpath: /* <- :TODO: mark this label as cold. */
     rb_check_type(v, t);
+    RBIMPL_UNREACHABLE();
 }
 
 #endif /* RBIMPL_VALUE_TYPE_H */

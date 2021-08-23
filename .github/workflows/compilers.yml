@@ -170,7 +170,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/junaruga/ruby-ci-image:${{ matrix.entry.container || 'clang-14' }}
-      options: --user root
     steps:
       - run: mkdir build
         working-directory:

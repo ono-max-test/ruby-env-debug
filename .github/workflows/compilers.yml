@@ -171,6 +171,8 @@ jobs:
     container:
       image: ghcr.io/junaruga/ruby-ci-image:${{ matrix.entry.container || 'clang-14' }}
     steps:
+      - run: id
+        working-directory:
       - run: mkdir build
         working-directory:
       - name: setenv

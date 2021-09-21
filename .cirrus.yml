@@ -41,8 +41,8 @@ task:
   print_env_script:
     - echo "GNUMAKEFLAGS=$GNUMAKEFLAGS"
   # Set any timezone to pass the tests.
-  set_timezone_script: sudo ln -snf /usr/share/zoneinfo/Japan /etc/localtime
-  dpkg-reconfigure_script: sudo dpkg-reconfigure --frontend noninteractive tzdata
+  # set_timezone_script: sudo ln -snf /usr/share/zoneinfo/Japan /etc/localtime
+  # dpkg-reconfigure_script: sudo dpkg-reconfigure --frontend noninteractive tzdata
   # Arm containers are executed in AWS's EKS, and it's not yet supporting IPv6
   # See https://github.com/aws/containers-roadmap/issues/835
   disable_ipv6_script: sudo ./tool/disable_ipv6.sh

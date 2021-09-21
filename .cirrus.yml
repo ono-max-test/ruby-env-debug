@@ -1,3 +1,6 @@
+# This CI is used to test Arm cases. We can set the maximum 16 tasks.
+# The entire testing design is inspired from .github/workflows/compilers.yml.
+
 # By default, Cirrus mounts an empty volume to `/tmp`
 # which triggers all sorts of warnings like "system temporary path is world-writable: /tmp".
 # Lets workaround it by specifying a custom volume mount point.
@@ -5,7 +8,6 @@ env:
   CIRRUS_VOLUME: /cirrus-ci-volume
 
 task:
-  # The entire testing design is inspired from .github/workflows/compilers.yml .
   name: Arm64 Graviton2 / $CC
   arm_container:
     # We use the arm64 images at http://ghcr.io/ruby/ruby-ci-image .
@@ -31,13 +33,13 @@ task:
       CC: gcc-11
   id_script: id
   set_env_script:
-    # Use `make_cmd` instead of `make` environment variable,
-    # because the `make` environment variable is used in rubygems,
-    # and some rubygems tests fail in this case.
+    # Set `GNUMAKEFLAGS`, because the flags are GNU make specific. Note using
+    # the `make` environment variable used in compilers.yml causes some rubygems
+    # tests to fail.
     # https://github.com/rubygems/rubygems/issues/4921
-    - echo "make_cmd=make -s -j$((1 + $CIRRUS_CPU))" >> $CIRRUS_ENV
+    - echo "GNUMAKEFLAGS=-s -j$((1 + $CIRRUS_CPU))" >> $CIRRUS_ENV
   print_env_script:
-    - echo "make_cmd=$make_cmd"
+    - echo "GNUMAKEFLAGS=$GNUMAKEFLAGS"
   # Set any timezone to pass the tests.
   set_timezone_script: sudo ln -snf /usr/share/zoneinfo/Japan /etc/localtime
   dpkg-reconfigure_script: sudo dpkg-reconfigure --frontend noninteractive tzdata
@@ -51,13 +53,13 @@ task:
     --disable-install-doc
     --with-ext=-test-/cxxanyargs,+
     --prefix="$RUBY_PREFIX"
-  make_extract-extlibs_script: $make_cmd extract-extlibs
-  make_incs_script: $make_cmd incs
-  make_script: $make_cmd
-  make_leaked-globals_script: $make_cmd leaked-globals
-  make_test_script: $make_cmd test
-  make_install_script: $make_cmd install
+  make_extract-extlibs_script: make extract-extlibs
+  make_incs_script: make incs
+  make_script: make
+  make_leaked-globals_script: make leaked-globals
+  make_test_script: make test
+  make_install_script: make install
   install_gems_for_test_script: $RUBY_PREFIX/bin/gem install --no-doc timezone tzinfo
-  make_test-tool_script: $make_cmd test-tool
-  make_test-all_script: $make_cmd test-all
-  make_test-spec_script: $make_cmd test-spec
+  make_test-tool_script: make test-tool
+  make_test-all_script: make test-all
+  make_test-spec_script: make test-spec

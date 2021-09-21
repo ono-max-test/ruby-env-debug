@@ -32,12 +32,6 @@ task:
       CC: clang-12
       CC: gcc-11
   id_script: id
-  set_env_script:
-    # Set `GNUMAKEFLAGS`, because the flags are GNU make specific. Note using
-    # the `make` environment variable used in compilers.yml causes some rubygems
-    # tests to fail.
-    # https://github.com/rubygems/rubygems/issues/4921
-    - echo "GNUMAKEFLAGS=-s -j$((1 + $CIRRUS_CPU))" >> $CIRRUS_ENV
   print_env_script:
     - echo "GNUMAKEFLAGS=$GNUMAKEFLAGS"
   # Set any timezone to pass the tests.

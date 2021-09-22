@@ -47,7 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         entry:
-          - { key: default_cc, name: gcc-11,    value: gcc-11,    container: gcc-11 }
+          - { key: default_cc, name: gcc-11,    value: gcc-11,    container: gcc-11, check: true }
           - { key: default_cc, name: gcc-10,    value: gcc-10,    container: gcc-10 }
           - { key: default_cc, name: gcc-9,     value: gcc-9,     container: gcc-9 }
           - { key: default_cc, name: gcc-8,     value: gcc-8,     container: gcc-8 }
@@ -60,8 +60,8 @@ jobs:
             value: 'gcc-11 -O2 -flto=auto -ffat-lto-objects'
             container: gcc-11
             shared: '--disable-shared'
-            # check: true
-          - { key: default_cc, name: clang-14,  value: clang-14,  container: clang-14 }
+            #check: true
+          - { key: default_cc, name: clang-14,  value: clang-14,  container: clang-14, check: true }
           - { key: default_cc, name: clang-13,  value: clang-13,  container: clang-13 }
           - { key: default_cc, name: clang-12,  value: clang-12,  container: clang-12 }
           - { key: default_cc, name: clang-11,  value: clang-11,  container: clang-11 }
@@ -181,7 +181,7 @@ jobs:
       - name: setenv
         run: |
           echo "${{ matrix.entry.key }}=${{ matrix.entry.value }}" >> $GITHUB_ENV
-          echo "make=make -sj$((1 + $(nproc --all)))" >> $GITHUB_ENV
+          echo "GNUMAKEFLAGS=-sj$((1 + $(nproc --all)))" >> $GITHUB_ENV
       - uses: actions/checkout@v2
         with:
           path: src
@@ -192,20 +192,20 @@ jobs:
           ../src/configure -C ${default_configure} ${append_configure}
           ${{ matrix.entry.key == 'crosshost' && '--host="${crosshost}"' || '--with-gcc="${default_cc} ${append_cc}"' }}
           ${{ matrix.entry.shared || '--enable-shared' }}
-      - run: $make extract-extlibs
-      - run: $make incs
-      - run: $make
-      - run: $make leaked-globals
-      - run: $make test
-      - run: $make install
+      - run: make extract-extlibs
+      - run: make incs
+      - run: make
+      - run: make leaked-globals
+      - run: make test
+      - run: make install
         if: ${{ matrix.entry.check }}
       - run: /usr/local/bin/gem install --no-doc timezone tzinfo
         if: ${{ matrix.entry.check }}
-      - run: $make test-tool
+      - run: make test-tool
         if: ${{ matrix.entry.check }}
-      - run: $make test-all TESTS='-- ruby -ext-'
+      - run: make test-all TESTS='-- ruby -ext-'
         if: ${{ matrix.entry.check }}
-      - run: $make test-spec
+      - run: make test-spec
         if: ${{ matrix.entry.check }}
 
       - uses: k0kubun/action-slack@v2.0.0

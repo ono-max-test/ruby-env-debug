@@ -121,10 +121,9 @@ module Bundler
       names
     end
 
-    # returns a list of the dependencies
     def unmet_dependency_names
       dependency_names.select do |name|
-        name != "bundler" && search(name).empty?
+        search(name).empty?
       end
     end
 

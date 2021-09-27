@@ -136,7 +136,7 @@ module Gem
   end
 
   class Dependency
-    attr_accessor :source, :groups, :all_sources
+    attr_accessor :source, :groups
 
     alias_method :eql?, :==
 
@@ -147,7 +147,7 @@ module Gem
     end
 
     def to_yaml_properties
-      instance_variables.reject {|p| ["@source", "@groups", "@all_sources"].include?(p.to_s) }
+      instance_variables.reject {|p| ["@source", "@groups"].include?(p.to_s) }
     end
 
     def to_lock

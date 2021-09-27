@@ -25,8 +25,6 @@ module Bundler
       disable_checksum_validation
       disable_exec_load
       disable_local_branch_check
-      disable_multisource
-      disable_platform_warnings
       disable_shared_gems
       disable_version_check
       error_on_stderr

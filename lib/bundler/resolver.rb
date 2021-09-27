@@ -147,20 +147,11 @@ module Bundler
     end
 
     def index_for(dependency)
-      source = @source_requirements[dependency.name]
-      if source
-        source.specs
-      elsif @lockfile_uses_separate_rubygems_sources
-        Index.build do |idx|
-          if dependency.all_sources
-            dependency.all_sources.each {|s| idx.add_source(s.specs) if s }
-          else
-            idx.add_source @source_requirements[:default].specs
-          end
-        end
-      else
-        @index
-      end
+      source_for(dependency.name).specs
+    end
+
+    def source_for(name)
+      @source_requirements[name] || @source_requirements[:default]
     end
 
     def name_for(dependency)
@@ -183,16 +174,6 @@ module Bundler
       return false unless requirement.matches_spec?(spec) || spec.source.is_a?(Source::Gemspec)
       spec.activate_platform!(requirement.__platform) if !@platforms || @platforms.include?(requirement.__platform)
       true
-    end
-
-    def relevant_sources_for_vertex(vertex)
-      if vertex.root?
-        [@source_requirements[vertex.name]]
-      elsif @lockfile_uses_separate_rubygems_sources
-        vertex.recursive_predecessors.map do |v|
-          @source_requirements[v.name]
-        end << @source_requirements[:default]
-      end
     end
 
     def sort_dependencies(dependencies, activated, conflicts)
@@ -340,17 +321,9 @@ module Bundler
           elsif !conflict.existing
             o << "\n"
 
-            relevant_sources = if conflict.requirement.source
-              [conflict.requirement.source]
-            elsif conflict.requirement.all_sources
-              conflict.requirement.all_sources
-            elsif @lockfile_uses_separate_rubygems_sources
-              # every conflict should have an explicit group of sources when we
-              # enforce strict pinning
-              raise "no source set for #{conflict}"
-            else
-              []
-            end.compact.map(&:to_s).uniq.sort
+            relevant_source = conflict.requirement.source || source_for(name)
+
+            metadata_requirement = name.end_with?("\0")
 
             o << "Could not find gem '#{SharedHelpers.pretty_dependency(conflict.requirement)}'"
             if conflict.requirement_trees.first.size > 1
@@ -359,11 +332,11 @@ module Bundler
             end
             o << " "
 
-            o << if relevant_sources.empty?
-                   "in any of the sources.\n"
-                 else
-                   "in any of the relevant sources:\n  #{relevant_sources * "\n  "}\n"
-                 end
+            o << if metadata_requirement
+              "is not available in #{relevant_source}"
+            else
+              "in #{relevant_source}.\n"
+            end
           end
         end,
         :version_for_spec => lambda {|spec| spec.version }

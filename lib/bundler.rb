@@ -55,6 +55,7 @@ module Bundler
   autoload :SharedHelpers,          "bundler/shared_helpers"
   autoload :Source,                 "bundler/source"
   autoload :SourceList,             "bundler/source_list"
+  autoload :SourceMap,              "bundler/source_map"
   autoload :SpecSet,                "bundler/spec_set"
   autoload :StubSpecification,      "bundler/stub_specification"
   autoload :UI,                     "bundler/ui"

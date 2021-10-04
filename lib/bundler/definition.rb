@@ -593,36 +593,11 @@ module Bundler
       end
     end
 
-    def converge_rubygems_sources
-      return false if Bundler.feature_flag.lockfile_uses_separate_rubygems_sources?
-
-      changes = false
-
-      # Get the RubyGems sources from the Gemfile.lock
-      locked_gem_sources = @locked_sources.select {|s| s.is_a?(Source::Rubygems) }
-      # Get the RubyGems remotes from the Gemfile
-      actual_remotes = sources.rubygems_remotes
-
-      # If there is a RubyGems source in both
-      if !locked_gem_sources.empty? && !actual_remotes.empty?
-        locked_gem_sources.each do |locked_gem_source|
-          # Merge the remotes from the Gemfile into the Gemfile.lock
-          changes |= locked_gem_source.replace_remotes(actual_remotes, Bundler.settings[:allow_deployment_source_credential_changes])
-        end
-      end
-
-      changes
-    end
-
     def converge_sources
-      changes = false
-
-      changes |= converge_rubygems_sources
-
       # Replace the sources from the Gemfile with the sources from the Gemfile.lock,
       # if they exist in the Gemfile.lock and are `==`. If you can't find an equivalent
       # source in the Gemfile.lock, use the one from the Gemfile.
-      changes |= sources.replace_sources!(@locked_sources)
+      changes = sources.replace_sources!(@locked_sources)
 
       sources.all_sources.each do |source|
         # If the source is unlockable and the current command allows an unlock of

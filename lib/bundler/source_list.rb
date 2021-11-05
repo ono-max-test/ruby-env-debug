@@ -18,6 +18,10 @@ module Bundler
       @metadata_source        = Source::Metadata.new
     end
 
+    def aggregate_global_source?
+      global_rubygems_source.remotes.size > 1
+    end
+
     def add_path_source(options = {})
       if options["gemspec"]
         add_source_to_list Source::Gemspec.new(options), path_sources
@@ -64,12 +68,20 @@ module Bundler
       @rubygems_sources + [default_source]
     end
 
+    def non_global_rubygems_sources
+      @rubygems_sources
+    end
+
     def rubygems_remotes
       rubygems_sources.map(&:remotes).flatten.uniq
     end
 
     def all_sources
       path_sources + git_sources + plugin_sources + rubygems_sources + [metadata_source]
+    end
+
+    def non_default_explicit_sources
+      all_sources - [default_source, metadata_source]
     end
 
     def get(source)

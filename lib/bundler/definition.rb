@@ -907,6 +907,9 @@ module Bundler
     end
 
     def source_requirements
+      verify_source_requirements_for_indirect_dependencies
+      # verify_source_requirements_for_indirect_dependencies_2
+
       # Load all specs from remote sources
       index
 
@@ -915,6 +918,9 @@ module Bundler
       # look for that gemspec (or its dependencies)
       default = sources.default_source
       source_requirements = { :default => default }
+      # WIP: Check all the requirements.
+      # source_requirements =  { :default => default }.merge(all_requirements)
+
       default = nil unless Bundler.feature_flag.lockfile_uses_separate_rubygems_sources?
       dependencies.each do |dep|
         next unless source = dep.source || default
@@ -988,6 +994,80 @@ module Bundler
       return false unless source.is_a?(Source::Rubygems)
 
       Bundler.settings[:allow_deployment_source_credential_changes] && source.equivalent_remotes?(sources.rubygems_remotes)
+    end
+
+    # Refer lib/bundler/definition.rb#precompute_source_requirements_for_indirect_dependencies?
+    def verify_source_requirements_for_indirect_dependencies
+      return unless @remote && sources.non_global_rubygems_sources.size > 0
+
+      names = sources.non_global_rubygems_sources.map {|d| "  * #{d}" }.join("\n")
+
+      msg = String.new
+      msg << "Your Gemfile contains scoped sources, namely:\n\n"
+      msg << names
+      msg << "\n\nUsing the above sources may result in installing unexpected gems."
+
+      if allow_dependnecy_confusion?
+        Bundler.ui.warn msg
+      else
+        msg << " To avoid this error, make sure you set environment variable BUNDLE_ALLOW_DEPENDENCY_CONFUSION`."
+        raise SecurityError, msg
+      end
+    end
+
+    def verify_source_requirements_for_indirect_dependencies_2
+      return unless @remote && sources.non_global_rubygems_sources.size > 0
+    end
+
+    def allow_dependnecy_confusion?
+      ENV["BUNDLE_ALLOW_DEPENDENCY_CONFUSION"]
+    end
+
+    # Refer lib/bundler/source_map.rb#all_requirements
+    def all_requirements
+      requirements = direct_requirements.dup
+
+      unmet_deps = sources.non_default_explicit_sources.map do |source|
+        (source.spec_names - pinned_spec_names).each do |indirect_dependency_name|
+          previous_source = requirements[indirect_dependency_name]
+          if previous_source.nil?
+            requirements[indirect_dependency_name] = source
+          else
+            msg = ["The gem '#{indirect_dependency_name}' was found in multiple relevant sources."]
+            msg.concat [previous_source, source].map {|s| "  * #{s}" }.sort
+            msg << "You should add this gem to the source block for the source you wish it to be installed from."
+            msg = msg.join("\n")
+
+            raise SecurityError, msg unless allow_dependnecy_confusion?
+            Bundler.ui.warn "Warning: #{msg}"
+          end
+        end
+
+        source.unmet_deps
+      end
+
+      sources.default_source.add_dependency_names(unmet_deps.flatten - requirements.keys)
+
+      requirements
+    end
+
+    # Backport from lib/bundler/source_map.rb#pinned_spec_names
+    def pinned_spec_names(skip = nil)
+      direct_requirements.reject {|_, source| source == skip }.keys
+    end
+
+    # Backport from lib/bundler/source_map.rb#direct_requirements
+    def direct_requirements
+      @direct_requirements ||= begin
+        requirements = {}
+        default = sources.default_source
+        dependencies.each do |dep|
+          dep_source = dep.source || default
+          dep_source.add_dependency_names(dep.name)
+          requirements[dep.name] = dep_source
+        end
+        requirements
+      end
     end
   end
 end

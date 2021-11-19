@@ -1,0 +1,21 @@
+--- test/rubygems/test_gem.rb.org	2021-07-09 16:39:36.861867209 +0200
++++ test/rubygems/test_gem.rb	2021-07-09 18:14:40.408128157 +0200
+@@ -1821,16 +1821,11 @@
+       io.write 'gem "a"'
+     end
+ 
+-    platform = Bundler::GemHelpers.generic_local_platform
+-    if platform == Gem::Platform::RUBY
+-      platform = ''
+-    else
+-      platform = " #{platform}"
+-    end
+     expected =
+       if Gem::USE_BUNDLER_FOR_GEMDEPS
+         <<-EXPECTED
+-Could not find gem 'a#{platform}' in any of the gem sources listed in your Gemfile.
++Could not find gem 'a' in locally installed gems.
++The source does not contain any versions of 'a'
+ You may need to `gem install -g` to install missing gems
+ 
+         EXPECTED

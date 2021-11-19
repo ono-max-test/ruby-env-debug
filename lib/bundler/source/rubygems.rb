@@ -289,6 +289,10 @@ module Bundler
         names
       end
 
+      def dependency_api_available?
+        api_fetchers.any?
+      end
+
     protected
 
       def credless_remotes

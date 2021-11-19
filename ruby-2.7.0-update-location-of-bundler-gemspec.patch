@@ -1,0 +1,37 @@
+From 8cca079d3be8d07c261baea72529628469938245 Mon Sep 17 00:00:00 2001
+From: hsbt <hsbt@b2dd03c8-39d4-4d8f-98ff-823fe69b080e>
+Date: Sat, 2 Feb 2019 10:41:22 +0000
+Subject: [PATCH] Fixup r66984. Update the location of bundler gemspec.
+
+git-svn-id: svn+ssh://ci.ruby-lang.org/ruby/trunk@66993 b2dd03c8-39d4-4d8f-98ff-823fe69b080e
+---
+ spec/bundler/support/path.rb | 2 +-
+ tool/sync_default_gems.rb    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/spec/bundler/support/path.rb b/spec/bundler/support/path.rb
+index 38f7145dc72a..69efcba05175 100644
+--- a/spec/bundler/support/path.rb
++++ b/spec/bundler/support/path.rb
+@@ -9,7 +9,7 @@ def root
+     end
+ 
+     def gemspec
+-      @gemspec ||= root.join(ruby_core? ? "lib/bundler.gemspec" : "bundler.gemspec")
++      @gemspec ||= root.join(ruby_core? ? "lib/bundler/bundler.gemspec" : "bundler.gemspec")
+     end
+ 
+     def bindir
+diff --git a/tool/sync_default_gems.rb b/tool/sync_default_gems.rb
+index bb4fcdd2cc12..26458147e5a3 100644
+--- a/tool/sync_default_gems.rb
++++ b/tool/sync_default_gems.rb
+@@ -89,7 +89,7 @@ def sync_default_gems(gem)
+     `rm -rf lib/bundler* libexec/bundler libexec/bundle libexec/bundle_ruby spec/bundler man/bundle* man/gemfile*`
+     `cp -r ../../bundler/bundler/lib/bundler* ./lib`
+     `cp -r ../../bundler/bundler/exe/bundle* ./libexec`
+-    `cp ../../bundler/bundler/bundler.gemspec ./lib`
++    `cp ../../bundler/bundler/bundler.gemspec ./lib/bundler`
+     `cp -r ../../bundler/bundler/spec spec/bundler`
+     `cp -r ../../bundler/bundler/man/*.{1,5,1\.txt,5\.txt,ronn} ./man`
+     `rm -rf spec/bundler/support/artifice/vcr_cassettes`

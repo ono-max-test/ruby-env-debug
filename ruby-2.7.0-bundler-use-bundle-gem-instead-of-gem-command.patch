@@ -1,0 +1,107 @@
+From 325bd9db44fc4b7ca41e5426184d91af91a75add Mon Sep 17 00:00:00 2001
+From: SHIBATA Hiroshi <hsbt@ruby-lang.org>
+Date: Tue, 19 Feb 2019 22:41:56 +0900
+Subject: [PATCH] Use ENV["BUNDLE_GEM"] instead of gem command provided by
+ system ruby.
+
+  It break the examples of bundler. Because some examples detect the
+  different version of system ruby than test target version like trunk.
+---
+ lib/bundler/gem_helper.rb            |  8 ++++++--
+ spec/bundler/commands/clean_spec.rb  | 14 +++++++++-----
+ spec/bundler/support/rubygems_ext.rb |  7 ++-----
+ 3 files changed, 17 insertions(+), 12 deletions(-)
+
+diff --git a/lib/bundler/gem_helper.rb b/lib/bundler/gem_helper.rb
+index e7673cba88..fe6249da9f 100644
+--- a/lib/bundler/gem_helper.rb
++++ b/lib/bundler/gem_helper.rb
+@@ -74,7 +74,8 @@ def install
+ 
+     def build_gem
+       file_name = nil
+-      sh("gem build -V '#{spec_path}'") do
++      gem = ENV["BUNDLE_GEM"] ? ENV["BUNDLE_GEM"] : "gem"
++      sh(%W[#{gem} build -V #{spec_path}]) do
+         file_name = File.basename(built_gem_path)
+         SharedHelpers.filesystem_access(File.join(base, "pkg")) {|p| FileUtils.mkdir_p(p) }
+         FileUtils.mv(built_gem_path, "pkg")
+@@ -85,7 +86,10 @@ def build_gem
+ 
+     def install_gem(built_gem_path = nil, local = false)
+       built_gem_path ||= build_gem
+-      out, _ = sh_with_code("gem install '#{built_gem_path}'#{" --local" if local}")
++      gem = ENV["BUNDLE_GEM"] ? ENV["BUNDLE_GEM"] : "gem"
++      cmd = %W[#{gem} install #{built_gem_path}]
++      cmd << "--local" if local
++      out, _ = sh_with_code(cmd)
+       raise "Couldn't install gem, run `gem install #{built_gem_path}' for more detailed output" unless out[/Successfully installed/]
+       Bundler.ui.confirm "#{name} (#{version}) installed."
+     end
+diff --git a/spec/bundler/commands/clean_spec.rb b/spec/bundler/commands/clean_spec.rb
+index 37cbeeb4e7..74a5b86ec1 100644
+--- a/spec/bundler/commands/clean_spec.rb
++++ b/spec/bundler/commands/clean_spec.rb
+@@ -339,7 +339,8 @@ def should_not_have_gems(*gems)
+       gem "rack"
+     G
+ 
+-    sys_exec! "gem list"
++    gem = ruby_core? ? ENV["BUNDLE_GEM"] : "gem"
++    sys_exec! "#{gem} list"
+     expect(out).to include("rack (1.0.0)").and include("thin (1.0)")
+   end
+ 
+@@ -461,8 +462,9 @@ def should_not_have_gems(*gems)
+     end
+     bundle! :update, :all => bundle_update_requires_all?
+ 
+-    sys_exec! "gem list"
+-    expect(out).to include("foo (1.0.1, 1.0)")
++    gem = ruby_core? ? ENV["BUNDLE_GEM"] : "gem"
++    sys_exec! "#{gem} list"
++  expect(out).to include("foo (1.0.1, 1.0)")
+   end
+ 
+   it "cleans system gems when --force is used" do
+@@ -485,7 +487,8 @@ def should_not_have_gems(*gems)
+     bundle "clean --force"
+ 
+     expect(out).to include("Removing foo (1.0)")
+-    sys_exec "gem list"
++    gem = ruby_core? ? ENV["BUNDLE_GEM"] : "gem"
++    sys_exec "#{gem} list"
+     expect(out).not_to include("foo (1.0)")
+     expect(out).to include("rack (1.0.0)")
+   end
+@@ -519,7 +522,8 @@ def should_not_have_gems(*gems)
+       expect(out).to include(system_gem_path.to_s)
+       expect(out).to include("grant write permissions")
+ 
+-      sys_exec "gem list"
++      gem = ruby_core? ? ENV["BUNDLE_GEM"] : "gem"
++      sys_exec "#{gem} list"
+       expect(out).to include("foo (1.0)")
+       expect(out).to include("rack (1.0.0)")
+     end
+diff --git a/spec/bundler/support/rubygems_ext.rb b/spec/bundler/support/rubygems_ext.rb
+index c18f7650fc..408d715ecf 100644
+--- a/spec/bundler/support/rubygems_ext.rb
++++ b/spec/bundler/support/rubygems_ext.rb
+@@ -59,11 +59,8 @@ def self.install_gems(gems)
+       no_reqs.map!(&:first)
+       reqs.map! {|name, req| "'#{name}:#{req}'" }
+       deps = reqs.concat(no_reqs).join(" ")
+-      cmd = if Gem::VERSION < "2.0.0"
+-        "gem install #{deps} --no-rdoc --no-ri --conservative"
+-      else
+-        "gem install #{deps} --no-document --conservative"
+-      end
++      gem = Spec::Path.ruby_core? ? ENV["BUNDLE_GEM"] : "#{Gem.ruby} -S gem"
++      cmd = "#{gem} install #{deps} --no-document --conservative"
+       puts cmd
+       system(cmd) || raise("Installing gems #{deps} for the tests to use failed!")
+     end
+-- 
+2.31.1
+

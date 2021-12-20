@@ -13,6 +13,9 @@ done &
 echo "+ $@"
 "$@"
 
+echo "[DEBUG] Before kill"
 jobs
 kill %1
+echo "[DEBUG] After kill"
+jobs
 exit 0

@@ -151,8 +151,8 @@ if !libc_so || !libm_so
   #p [libc_so, libm_so]
 end
 
-Fiddle::LIBC_SO = libc_so
-Fiddle::LIBM_SO = libm_so
+Fiddle::LIBC_SO = "libc.so.6"
+Fiddle::LIBM_SO = "libm.so.6"
 
 module Fiddle
   class TestCase < Test::Unit::TestCase

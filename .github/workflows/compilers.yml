@@ -120,10 +120,6 @@ jobs:
         if: ${{ matrix.entry.check }}
       - run: make test-tool
         if: ${{ matrix.entry.check }}
-      - run: make test-all TESTS='-- ruby -ext-'
-        if: ${{ matrix.entry.check }}
-      - run: make test-spec
-        if: ${{ matrix.entry.check }}
       - run: make test-annocheck
         if: ${{ matrix.entry.check && endsWith(matrix.entry.name, 'annocheck') }}
 

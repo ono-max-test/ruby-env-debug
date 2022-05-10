@@ -69,7 +69,8 @@ jobs:
             configure_append: '--disable-shared optflags=-O2'
           - key: default_cc
             name: 'gcc-11 annocheck'
-            value: 'gcc-11 -Wl,-z,now -Wl,-pie'
+            # value: 'gcc-11 -Wl,-z,now -Wl,-pie'
+            value: 'gcc-11'
             container: gcc-11
             check: true
           - key: default_cc

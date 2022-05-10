@@ -71,7 +71,7 @@ jobs:
             name: 'gcc-11 annocheck'
             value: 'gcc-11 -Wl,-z,now -Wl,-pie'
             container: gcc-11
-            # check: true
+            check: true
           - key: default_cc
             name: 'clang-14 LTO'
             value: 'clang-14 -flto=auto'
@@ -124,7 +124,7 @@ jobs:
       - run: make test-spec
         if: ${{ matrix.entry.check }}
       - run: make test-annocheck
-        if: ${{ endsWith(matrix.entry.name, 'annocheck') }}
+        if: ${{ matrix.entry.check && endsWith(matrix.entry.name, 'annocheck') }}
 
       - uses: k0kubun/action-slack@v2.0.0
         with:

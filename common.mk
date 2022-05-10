@@ -1450,8 +1450,8 @@ no-test-bundler-parallel:
 test-annocheck: $(TEST_RUNNABLE)-test-annocheck
 # configure --enable-shared is required to run this target.
 yes-test-annocheck: $(PROGRAM)
-	ls -l tool/test-annocheck.sh
-	bash tool/test-annocheck.sh $(PROGRAM)
+	ls -l $(tooldir)/test-annocheck.sh
+	$(tooldir)/test-annocheck.sh $(PROGRAM)
 no-test-annocheck: PHONY
 
 GEM = up

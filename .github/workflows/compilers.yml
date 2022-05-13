@@ -123,12 +123,19 @@ jobs:
         if: ${{ matrix.entry.check }}
       - run: make prepare-gems
         if: ${{ matrix.entry.check }}
-      # - run: make test-tool
-      #   if: ${{ matrix.entry.check }}
-      # - run: make test-all TESTS='-- ruby -ext-'
-      #   if: ${{ matrix.entry.check }}
-      # - run: make test-spec
-      #   if: ${{ matrix.entry.check }}
+      - run: make test-tool
+        if: ${{ matrix.entry.check }}
+      # FIXME: Skip MJIT tests failing in case of -fcf-protection.
+      # https://bugs.ruby-lang.org/issues/15307
+      - run: |
+          rm test/ruby/test_jit.rb
+          rm test/ruby/test_rubyvm_jit.rb
+        if: ${{ endsWith(matrix.entry.name, 'annocheck') }}
+        working-directory: src
+      - run: make test-all TESTS='-- ruby -ext-'
+        if: ${{ matrix.entry.check }}
+      - run: make test-spec
+        if: ${{ matrix.entry.check }}
       - run: make test-annocheck
         if: ${{ matrix.entry.check && endsWith(matrix.entry.name, 'annocheck') }}
 

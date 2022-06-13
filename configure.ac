@@ -49,6 +49,7 @@ m4_include([tool/m4/ruby_werror_flag.m4])dnl
 AC_ARG_VAR([cflags], [additional CFLAGS (ignored when CFLAGS is given)])dnl
 AC_ARG_VAR([cppflags], [additional CPPFLAGS (ignored when CPPFLAGS is given)])dnl
 AC_ARG_VAR([cxxflags], [additional CXXFLAGS (ignored when CXXFLAGS is given)])dnl
+AC_ARG_VAR([build_only_flags], [build only flags, not used in the rbconfig.rb])dnl
 
 : "environment section" && {
 HAVE_BASERUBY=yes
@@ -2894,6 +2895,7 @@ AC_ARG_WITH(mjit-tabs,
 AC_SUBST(MJIT_TABS)dnl
 AC_SUBST(DLDFLAGS)dnl
 AC_SUBST(ARCH_FLAG)dnl
+AC_SUBST(build_only_flags)dnl
 AC_SUBST(MJIT_HEADER_FLAGS)dnl
 AC_SUBST(MJIT_HEADER_INSTALL_DIR)dnl
 AC_SUBST(MJIT_CC)dnl
@@ -4411,6 +4413,7 @@ config_summary "DLDFLAGS"            "$DLDFLAGS"
 config_summary "optflags"            "$optflags"
 config_summary "debugflags"          "$debugflags"
 config_summary "warnflags"           "$warnflags"
+config_summary "build_only_flags"    "$build_only_flags"
 config_summary "strip command"       "$STRIP"
 config_summary "install doc"         "$DOCTARGETS"
 config_summary "JIT support"         "$MJIT_SUPPORT"

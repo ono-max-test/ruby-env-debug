@@ -118,7 +118,7 @@ jobs:
           }}=${{
             matrix.entry.crosshost || '"${default_cc}${append_cc:+ $append_cc}"'
           }}
-          --${{ matrix.entry.shared || 'enable' }}-shared
+          --${{ matrix.entry.shared || 'enable' }}-shared || (cat config.log; false)
       - run: make extract-extlibs
       - run: make incs
       - run: make showflags

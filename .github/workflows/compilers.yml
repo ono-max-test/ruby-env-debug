@@ -225,7 +225,7 @@ jobs:
         working-directory: /home/ci
       - name: setenv
         run: |
-          echo "GNUMAKEFLAGS=-sj$((1 + $(nproc --all)))" >> $GITHUB_ENV
+          echo "GNUMAKEFLAGS=-sj$((1 + $(nproc --all)))" | sudo tee -a $GITHUB_ENV
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
           path: src

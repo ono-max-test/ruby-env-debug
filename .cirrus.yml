@@ -16,10 +16,10 @@ task:
     image: ghcr.io/ruby/ruby-ci-image:$CC
     # Define the used cpu core in each matrix task. We can use total 16 cpu
     # cores in entire matrix. [cpu] = [total cpu: 16] / [number of tasks]
-    cpu: 8
+    cpu: 4
     # We can request maximum 4 GB per cpu.
     # [memory per task] = [memory per cpu: 4 GB] * [cpu]
-    memory: 32G
+    memory: 16G
   env:
     CIRRUS_CLONE_DEPTH: 50
     optflags: '-O1'
@@ -71,10 +71,10 @@ yjit_task:
     image: ghcr.io/ruby/ruby-ci-image:$CC
     # Define the used cpu core in each matrix task. We can use total 16 cpu
     # cores in entire matrix. [cpu] = [total cpu: 16] / [number of tasks]
-    cpu: 8
+    cpu: 4
     # We can request maximum 4 GB per cpu.
     # [memory per task] = [memory per cpu: 4 GB] * [cpu]
-    memory: 32G
+    memory: 16G
   env:
     CIRRUS_CLONE_DEPTH: 50
     optflags: '-O1'

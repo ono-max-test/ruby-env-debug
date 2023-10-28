@@ -30,8 +30,6 @@ env:
     # https://github.com/travis-ci/travis-build/blob/e411371dda21430a60f61b8f3f57943d2fe4d344/lib/travis/build/bash/travis_apt_get_options.bash#L7
     - travis_apt_get_options='--allow-downgrades --allow-remove-essential --allow-change-held-packages'
     - travis_apt_get_options="-yq --no-install-suggests --no-install-recommends $travis_apt_get_options"
-    # -O1 is faster than -O3 in our tests.
-    - optflags=-O1
     # -g0 disables backtraces when SEGV.  Do not set that.
     - debugflags=-ggdb3
     - RUBY_TESTOPTS="$JOBS -q --tty=no"

@@ -116,7 +116,7 @@ jobs:
     - stage: test
       <<: *s390x-linux
   allow_failures:
-    # - stage: ready
+    - stage: "verify infra"
     # Allow failures for the unstable jobs.
     # - name: arm32-linux
     # - name: arm64-linux

@@ -36,6 +36,9 @@ env:
     - RUBY_TESTOPTS="$JOBS -q --tty=no"
 
 .org.ruby-lang.ci.matrix-definitions:
+  - &no-test
+    before_script: echo OK
+    script: echo OK
   - &gcc-11
     compiler: gcc-11
     before_install:
@@ -99,13 +102,13 @@ jobs:
     # Ready
     - stage: "verify infra"
       arch: arm64
-      script: echo OK
+      <<: *no-test
     - stage: "verify infra"
       arch: ppc64le
-      script: echo OK
+      <<: *no-test
     - stage: "verify infra"
       arch: s390x
-      script: echo OK
+      <<: *no-test
     # Test
     - stage: test
       <<: *arm32-linux

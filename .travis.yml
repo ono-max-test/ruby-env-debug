@@ -94,14 +94,29 @@ env:
         linux-libc-dev:armhf
         zlib1g-dev:armhf
 
-matrix:
+jobs:
   include:
-    - <<: *arm32-linux
+    # Ready
+    - stage: "verify infra"
+      arch: arm64
+      script: echo OK
+    - stage: "verify infra"
+      arch: ppc64le
+      script: echo OK
+    - stage: "verify infra"
+      arch: s390x
+      script: echo OK
+    # Test
+    - stage: test
+      <<: *arm32-linux
     # Comment out as the 2nd arm64 pipeline is unstable.
     # - <<: *arm64-linux
-    - <<: *ppc64le-linux
-    - <<: *s390x-linux
+    - stage: test
+      <<: *ppc64le-linux
+    - stage: test
+      <<: *s390x-linux
   allow_failures:
+    # - stage: ready
     # Allow failures for the unstable jobs.
     # - name: arm32-linux
     # - name: arm64-linux

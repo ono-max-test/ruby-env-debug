@@ -23,6 +23,8 @@ env:
   LAUNCHABLE_WORKSPACE: ${{ github.event.repository.name }}
   # https://github.com/launchableinc/cli/blob/v1.80.1/launchable/utils/authentication.py#L71
   GITHUB_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  # This setting only needs for forked repositories from the ruby/ruby.
+  LAUNCHABLE_TOKEN: ${{ secrets.LAUNCHABLE_TOKEN }}
 
 concurrency:
   group: ${{ github.workflow }} / ${{ startsWith(github.event_name, 'pull') && github.ref_name || github.sha }}
@@ -106,7 +108,7 @@ jobs:
           random_number=$RANDOM
           echo "random_number=$random_number" >> $GITHUB_OUTPUT
           echo "TEST_WITH_LAUNCHABLE=--launchable-test-reports=$random_number.json" >> "$GITHUB_ENV"
-        if: ${{ github.repository == 'ruby/ruby' && (matrix.test_task == 'check' || matrix.test_task == 'test-all') }}
+        if: ${{ (matrix.test_task == 'check' || matrix.test_task == 'test-all') }}
 
       - name: Set repeat-count option for make ${{ matrix.test_task }}
         run: echo "TEST_WITH_LAUNCHABLE=$TEST_WITH_LAUNCHABLE --repeat-count=2" >> "$GITHUB_ENV"
@@ -135,7 +137,7 @@ jobs:
 
       - name: Launchable - record tests
         run: launchable record tests --flavor os=${{ matrix.os }} --flavor test_task=${{ matrix.test_task }} raw ${{ steps.setup_launchable.outputs.random_number }}.json
-        if: ${{ always() && github.repository == 'ruby/ruby' && (matrix.test_task == 'check' || matrix.test_task == 'test-all') }}
+        if: ${{ always() && (matrix.test_task == 'check' || matrix.test_task == 'test-all') }}
 
       - uses: ./.github/actions/slack
         with:

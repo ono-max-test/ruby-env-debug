@@ -61,6 +61,12 @@ jobs:
       )}}
 
     steps:
+      - name: Print values for debugging 1
+        run: |
+          echo "GITHUB_HEAD_REF: ${GITHUB_HEAD_REF}"
+          echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
+        working-directory:
+
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           sparse-checkout-cone-mode: false
@@ -85,6 +91,12 @@ jobs:
         if: ${{ matrix.test_task == 'test-bundled-gems' }}
 
       - run: make
+
+      - name: Print values for debugging 2
+        run: |
+          echo "GITHUB_HEAD_REF: ${GITHUB_HEAD_REF}"
+          echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
+        working-directory:
 
       # Launchable CLI requires Python and Java
       # https://www.launchableinc.com/docs/resources/cli-reference/
@@ -134,6 +146,12 @@ jobs:
           PRECHECK_BUNDLED_GEMS: 'no'
         if: ${{ matrix.test_task == 'check' && matrix.skipped_tests != '' }}
         continue-on-error: ${{ matrix.continue-on-skipped_tests || false }}
+
+      - name: Print values for debugging 3
+        run: |
+          echo "GITHUB_HEAD_REF: ${GITHUB_HEAD_REF}"
+          echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
+        working-directory:
 
       - name: Launchable - record tests
         run: launchable record tests --flavor os=${{ matrix.os }} --flavor test_task=${{ matrix.test_task }} raw ${{ steps.setup_launchable.outputs.random_number }}.json

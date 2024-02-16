@@ -25,7 +25,7 @@ env:
   # https://github.com/launchableinc/cli/blob/v1.80.1/launchable/utils/authentication.py#L71
   GITHUB_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
   # This setting only needs for forked repositories from the ruby/ruby.
-  # LAUNCHABLE_TOKEN: ${{ secrets.LAUNCHABLE_TOKEN }}
+  LAUNCHABLE_TOKEN: ${{ secrets.LAUNCHABLE_TOKEN }}
   # TEST_RUN_LAUNCHABLE: ${{ (github.repository == 'ruby/ruby' || (github.repository != 'ruby/ruby' && secrets.LAUNCHABLE_TOKEN)) && true || '' }}
 
 concurrency:
@@ -41,13 +41,13 @@ jobs:
       matrix:
         test_task: ['check']
         test_opts: ['']
-        run_launchable: ${{ (github.repository == 'ruby/ruby' || (github.repository != 'ruby/ruby' && secrets.LAUNCHABLE_TOKEN)) && [true] || [false] }}
+        run_launchable: ${{ (github.repository == 'ruby/ruby' || (github.repository != 'ruby/ruby' && env.LAUNCHABLE_TOKEN != '')) && [true] || [false] }}
         configure: ['']
         os: ${{ fromJSON(format('["macos-12","macos-13"{0}]', (github.repository == 'ruby/ruby' && ',"macos-arm-oss"' || ''))) }}
         include:
           - test_task: test-all
             test_opts: --repeat-count=2
-            run_launchable: ${{ (github.repository == 'ruby/ruby' || (github.repository != 'ruby/ruby' && secrets.LAUNCHABLE_TOKEN)) && true || false }}
+            run_launchable: ${{ (github.repository == 'ruby/ruby' || (github.repository != 'ruby/ruby' && env.LAUNCHABLE_TOKEN != '')) && true || false }}
             os: ${{ github.repository == 'ruby/ruby' && 'macos-arm-oss' || 'macos-13' }}
           - test_task: test-bundled-gems
             os: ${{ github.repository == 'ruby/ruby' && 'macos-arm-oss' || 'macos-13' }}

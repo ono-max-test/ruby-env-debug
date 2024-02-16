@@ -19,12 +19,13 @@ env:
   GITHUB_PULL_REQUEST_URL: ${{ github.event.pull_request.html_url }}
   # The following envs are necessary in Launchable tokenless authentication.
   # https://github.com/launchableinc/cli/blob/v1.80.1/launchable/utils/authentication.py#L20
-  LAUNCHABLE_ORGANIZATION: ${{ github.repository_owner }}
+  # LAUNCHABLE_ORGANIZATION: ${{ github.repository_owner }}
+  LAUNCHABLE_ORGANIZATION: foo
   LAUNCHABLE_WORKSPACE: ${{ github.event.repository.name }}
   # https://github.com/launchableinc/cli/blob/v1.80.1/launchable/utils/authentication.py#L71
   GITHUB_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
   # This setting only needs for forked repositories from the ruby/ruby.
-  LAUNCHABLE_TOKEN: ${{ secrets.LAUNCHABLE_TOKEN }}
+  # LAUNCHABLE_TOKEN: ${{ secrets.LAUNCHABLE_TOKEN }}
 
 concurrency:
   group: ${{ github.workflow }} / ${{ startsWith(github.event_name, 'pull') && github.ref_name || github.sha }}

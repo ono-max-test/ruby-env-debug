@@ -13,6 +13,19 @@ on:
     # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
   merge_group:
 
+env:
+  # GITHUB_PULL_REQUEST_URL are used for commenting test reports in Launchable Github App.
+  # https://github.com/launchableinc/cli/blob/v1.80.1/launchable/utils/link.py#L42
+  GITHUB_PULL_REQUEST_URL: ${{ github.event.pull_request.html_url }}
+  # The following envs are necessary in Launchable tokenless authentication.
+  # https://github.com/launchableinc/cli/blob/v1.80.1/launchable/utils/authentication.py#L20
+  LAUNCHABLE_ORGANIZATION: ${{ github.repository_owner }}
+  LAUNCHABLE_WORKSPACE: ${{ github.event.repository.name }}
+  # https://github.com/launchableinc/cli/blob/v1.80.1/launchable/utils/authentication.py#L71
+  GITHUB_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  # This setting only needs for forked repositories from the ruby/ruby.
+  LAUNCHABLE_TOKEN: ${{ secrets.LAUNCHABLE_TOKEN }}
+
 concurrency:
   group: ${{ github.workflow }} / ${{ startsWith(github.event_name, 'pull') && github.ref_name || github.sha }}
   cancel-in-progress: ${{ startsWith(github.event_name, 'pull') }}
@@ -28,7 +41,7 @@ jobs:
         configure: ['']
         os: ${{ fromJSON(format('["macos-12","macos-13"{0}]', (github.repository == 'ruby/ruby' && ',"macos-arm-oss"' || ''))) }}
         include:
-          - test_task: test-all TESTS=--repeat-count=2
+          - test_task: test-all
             os: ${{ github.repository == 'ruby/ruby' && 'macos-arm-oss' || 'macos-13' }}
           - test_task: test-bundled-gems
             os: ${{ github.repository == 'ruby/ruby' && 'macos-arm-oss' || 'macos-13' }}
@@ -48,10 +61,20 @@ jobs:
       )}}
 
     steps:
+      - name: Print values for debugging 1
+        run: |
+            echo "github.event_name=${{ github.event_name }}"
+            echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
+            echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+            echo "----- Output for 'git show-ref' -----"
+        working-directory:
+
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: /.github
+          # Set fetch-depth: 0 so that Launchable can receive commits information.
+          fetch-depth: 0
 
       - name: Install libraries
         uses: ./.github/actions/setup/macos
@@ -71,32 +94,14 @@ jobs:
 
       - run: make
 
-      - name: make ${{ matrix.test_task }}
+      - name: Print values for debugging 2
         run: |
-          make -s ${{ matrix.test_task }} ${TESTS:+TESTS=`echo "$TESTS" | sed 's| |$$/ -n!/|g;s|^|-n!/|;s|$|$$/|'`}
-        timeout-minutes: 60
-        env:
-          RUBY_TESTOPTS: '-q --tty=no'
-          TESTS: ${{ matrix.test_task == 'check' && matrix.skipped_tests || '' }}
-          TEST_BUNDLED_GEMS_ALLOW_FAILURES: 'minitest,test-unit,debug,bigdecimal,drb,typeprof'
-          PRECHECK_BUNDLED_GEMS: 'no'
-
-      - name: make skipped tests
-        run: |
-          make -s test-all TESTS=`echo "$TESTS" | sed 's| |$$/ -n/|g;s|^|-n/|;s|$|$$/|'`
-        env:
-          GNUMAKEFLAGS: ''
-          RUBY_TESTOPTS: '-v --tty=no'
-          TESTS: ${{ matrix.skipped_tests }}
-          PRECHECK_BUNDLED_GEMS: 'no'
-        if: ${{ matrix.test_task == 'check' && matrix.skipped_tests != '' }}
-        continue-on-error: ${{ matrix.continue-on-skipped_tests || false }}
-
-      - uses: ./.github/actions/slack
-        with:
-          label: ${{ matrix.os }} / ${{ matrix.test_task }} ${{ matrix.configure }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SIMPLER_ALERTS_URL }} # ruby-lang slack: ruby/simpler-alerts-bot
-        if: ${{ failure() }}
+            echo "github.event_name=${{ github.event_name }}"
+            echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
+            echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+            echo "----- Output for 'git show-ref' -----"
+            git show-ref
+        working-directory:
 
   result:
     if: ${{ always() }}

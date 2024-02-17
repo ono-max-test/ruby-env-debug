@@ -70,6 +70,40 @@ jobs:
             git show-ref
         working-directory:
 
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /.github
+          # Set fetch-depth: 0 so that Launchable can receive commits information.
+          fetch-depth: 0
+
+      - name: Install libraries
+        uses: ./.github/actions/setup/macos
+
+      - uses: ./.github/actions/setup/directories
+        with:
+          srcdir: src
+          builddir: build
+          makeup: true
+          dummy-files: ${{ matrix.test_task == 'check' }}
+
+      - name: Run configure
+        run: ../src/configure -C --disable-install-doc ${{ matrix.configure }}
+
+      - run: make prepare-gems
+        if: ${{ matrix.test_task == 'test-bundled-gems' }}
+
+      - run: make
+
+      - name: Print values for debugging 2
+        run: |
+            echo "github.event_name=${{ github.event_name }}"
+            echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
+            echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+            echo "----- Output for 'git show-ref' -----"
+            git show-ref
+        working-directory:
+
   result:
     if: ${{ always() }}
     name: ${{ github.workflow }} result

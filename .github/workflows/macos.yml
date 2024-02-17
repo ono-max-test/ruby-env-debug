@@ -74,6 +74,13 @@ jobs:
           # Set fetch-depth: 0 so that Launchable can receive commits information.
           fetch-depth: 0
 
+      - run: |
+          echo "github.event_name=${{ github.event_name }}"
+          echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
+          echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+          echo "----- Output for 'git show-ref' -----"
+          git show-ref
+
   result:
     if: ${{ always() }}
     name: ${{ github.workflow }} result

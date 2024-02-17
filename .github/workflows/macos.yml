@@ -80,6 +80,7 @@ jobs:
           echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
           echo "----- Output for 'git show-ref' -----"
           git show-ref
+        working-directory:
 
   result:
     if: ${{ always() }}

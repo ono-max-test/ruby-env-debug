@@ -73,7 +73,7 @@ jobs:
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: /.github
-          # Set fetch-depth: 0 so that Launchable can receive commits information.
+          # Set fetch-depth: 0 so that Launchable can receive commits information
           fetch-depth: 0
 
       - name: Install libraries
